@@ -61,39 +61,14 @@ var game =
 		load: function ()
 		{
 			game.event.check (event);
+			window.onclick = game.event.check;
 			window.onresize = game.event.check;
 		}
 	},
 
 	load: function ()
 	{
-		Object.defineProperties
-		(
-			window,
-			{
-				'load':
-				{
-					set: function (load)
-					{
-						load ();
-					}
-				},
-
-				'log':
-				{
-					set: function (message)
-					{
-						window.console.log (message);
-					}
-				}
-			}
-		);
-
-		window.load = function ()
-		{
-			window.document.body.style.margin = 0;
-		};
-
+		game.window.load ();
 		game.canvas.load ();
 		game.event.load ();
 	},
@@ -120,6 +95,43 @@ var game =
 	set update (update)
 	{
 		game.canvas.update ();
+	},
+
+	window:
+	{
+		load: function ()
+		{
+			Object.defineProperties
+			(
+				window,
+				{
+					'load':
+					{
+						set: function (load)
+						{
+							load ();
+						}
+					},
+
+					'log':
+					{
+						set: function (message)
+						{
+							window.console.log (message);
+						}
+					}
+				}
+			);
+
+			window.load = function ()
+			{
+				window.document.body.style.margin = 0;
+			};
+
+			delete game['window'];
+
+			game.window = window;
+		}
 	}
 };
 
