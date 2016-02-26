@@ -43,26 +43,68 @@ var game =
 		}
 	},
 
+	data:
+	{
+		image: {},
+
+		set load (data)
+		{
+			for (var tag in data)
+			{
+				switch (tag)
+				{
+					case 'image':
+						for (var id in data[tag])
+						{
+							var image = new Image ();
+								image.src = data[tag][id];
+								game.data.image[id] = image;
+						};
+					break;
+				};
+			};
+		}
+	},
+
 	set draw (draw)
 	{
+		if (draw)
+		{
+			draw.id = (draw.id) ? draw.id : Object.keys (game.scene).length;
+			draw.type = 'box';
+			draw.type = 'box';
+		}
+		else
+		{
 
+		};
 	},
 
 	event:
 	{
-		check: function (event)
+		load: function ()
 		{
+			game.event.manager (event);
+
+			window.onclick = game.event.manager;
+			window.onresize = game.event.manager;
+			window.ontick = game.event.manager;
+		},
+
+		manager: function (event)
+		{
+			game.event.tick = event.tick;
+			game.event.time = event.time;
 			game.event.type = event.type;
 			game.event.x = event.x;
 			game.event.y = event.y;
-			game.run = {};
+			game.event.run ();
 		},
 
-		load: function ()
+		run: function ()
 		{
-			game.event.check (event);
-			window.onclick = game.event.check;
-			window.onresize = game.event.check;
+			game.update = undefined;
+			game.draw = undefined;
 		}
 	},
 
@@ -86,15 +128,11 @@ var game =
 		}
 	},
 
-	set run (run)
-	{
-		game.update = undefined;
-		game.draw = undefined;
-	},
+	scene: {},
 
 	set update (update)
 	{
-		game.canvas.update ();
+		game.canvas.update ();;
 	},
 
 	window:
@@ -119,6 +157,34 @@ var game =
 						{
 							window.console.log (message);
 						}
+					},
+
+					'ontick':
+					{
+						set: function (f)
+						{
+							window.clock = window.setInterval
+							(
+								function ()
+								{
+									f ({ tick: window.tick, time: window.time, type: 'tick' });
+									window.time += window.tick;
+								},
+								window.tick
+							);
+						}
+					},
+
+					'tick':
+					{
+						value: 100,
+						writable: true
+					},
+
+					'time':
+					{
+						value: 0,
+						writable: true
 					}
 				}
 			);
