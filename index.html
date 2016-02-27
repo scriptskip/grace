@@ -21,6 +21,8 @@ var game =
 					canvas.context.clearRect (0, 0, canvas.width, canvas.height);
 				};
 
+				canvas.scene = {};
+
 				canvas.update = function ()
 				{
 					switch (game.event.type)
@@ -72,7 +74,9 @@ var game =
 		{
 			draw.id = (draw.id) ? draw.id : Object.keys (game.scene).length;
 			draw.type = 'box';
-			draw.type = 'box';
+			draw.type = (draw.a) ? 'line' : draw.type;
+			draw.type = (draw.i) ? 'image' : draw.type;
+			draw.type = (draw.r) ? 'ring' : draw.type;
 		}
 		else
 		{
@@ -128,11 +132,9 @@ var game =
 		}
 	},
 
-	scene: {},
-
 	set update (update)
 	{
-		game.canvas.update ();;
+		game.canvas.update ();
 	},
 
 	window:
@@ -203,4 +205,3 @@ var game =
 
 window.onload = game.load;
 </script>
-
