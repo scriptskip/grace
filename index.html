@@ -74,7 +74,37 @@ var game =
 	{
 		if (game.canvas.redraw)
 		{
+			var context = game.canvas.context;
+			var z = 0;
 
+			game.canvas.clear ();
+
+			while (z <= game.canvas.z)
+			{
+				for (var id = game.canvas.scene.length - 1; (id--) && (game.canvas.scene.length > 0);)
+				{
+					var draw = game.canvas.scene[id];
+
+					switch (draw.type)
+					{
+						case 'box':
+							switch (draw.fill)
+							{
+								case true:
+									context.fillRect (draw.x, draw.y, draw.w, draw.h);
+								break;
+
+								case false:
+									context.strokeRect (draw.x, draw.y, draw.w, draw.h);
+								break;
+							};
+						break;
+					};
+				};
+				z++;
+			};
+
+			game.canvas.redraw = false;
 		};
 	},
 
