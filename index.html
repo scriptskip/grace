@@ -7,8 +7,11 @@ var game =
 		{
 			var canvas = window.document.createElement ('canvas');
 				canvas.context = canvas.getContext ('2d');
-				canvas.style.position = 'absolute';
+
 				canvas.redraw = true;
+				canvas.scene = [];
+				canvas.style.position = 'absolute';
+				canvas.z = 0;
 
 				canvas.autosize = function ()
 				{
@@ -20,8 +23,6 @@ var game =
 				{
 					canvas.context.clearRect (0, 0, canvas.width, canvas.height);
 				};
-
-				canvas.scene = {};
 
 				canvas.update = function ()
 				{
@@ -68,17 +69,10 @@ var game =
 		}
 	},
 
-	set draw (draw)
+
+	draw: function ()
 	{
-		if (draw)
-		{
-			draw.id = (draw.id) ? draw.id : Object.keys (game.scene).length;
-			draw.type = 'box';
-			draw.type = (draw.a) ? 'line' : draw.type;
-			draw.type = (draw.i) ? 'image' : draw.type;
-			draw.type = (draw.r) ? 'ring' : draw.type;
-		}
-		else
+		if (game.canvas.redraw)
 		{
 
 		};
@@ -107,8 +101,8 @@ var game =
 
 		run: function ()
 		{
-			game.update = undefined;
-			game.draw = undefined;
+			game.update ();
+			game.draw ();
 		}
 	},
 
@@ -132,7 +126,23 @@ var game =
 		}
 	},
 
-	set update (update)
+	set paint (paint)
+	{
+		paint.id = (paint.id) ? paint.id : game.canvas.scene.length;
+
+		paint.type = 'box';
+		paint.type = (paint.a) ? 'line' : paint.type;
+		paint.type = (paint.i) ? 'image' : paint.type;
+		paint.type = (paint.r) ? 'ring' : paint.type;
+
+		paint.z = (paint.z) ? paint.z : 0;
+		if (paint.z > game.canvas.z) game.canvas.z = paint.z;
+
+		game.canvas.scene[game.canvas.scene.length] = paint;
+		game.canvas.redraw = true;
+	},
+
+	update: function (update)
 	{
 		game.canvas.update ();
 	},
