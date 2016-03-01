@@ -1,3 +1,6 @@
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAABlBMVEX///8AAABVwtN+AAAAAXRSTlMAQObYZgAAAC1JREFUeAFjwAUYGZHYIAClwHwUhThNAAMMlQQEsGhhxGkoXgMZMZwOB7hNAAAaYAAxcvuQHgAAAABJRU5ErkJggg==">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <script>
 var game =
 {
@@ -81,23 +84,41 @@ var game =
 
 			while (z <= game.canvas.z)
 			{
-				for (var id = game.canvas.scene.length - 1; (id--) && (game.canvas.scene.length > 0);)
+				for (var id = game.canvas.scene.length; (id--) && (game.canvas.scene.length > 0);)
 				{
 					var draw = game.canvas.scene[id];
+
+					var a = draw.a;
+					var b = draw.b;
+
+					var h = draw.h;
+					var r = draw.r;
+					var w = draw.w;
+
+					var x = draw.x;
+					var y = draw.y;
 
 					switch (draw.type)
 					{
 						case 'box':
-							switch (draw.fill)
-							{
-								case true:
-									context.fillRect (draw.x, draw.y, draw.w, draw.h);
-								break;
+							var _ = (draw.fill) ? context.fillRect (x, y, w, h) : context.strokeRect (x, y, w, h);
+						break;
 
-								case false:
-									context.strokeRect (draw.x, draw.y, draw.w, draw.h);
-								break;
-							};
+						case 'image':
+							var _ = (h) ? context.drawImage (draw.image, x, y, w, h) : context.drawImage (draw.image, x, y);
+						break;
+
+						case 'line':
+							context.beginPath ();
+							context.moveTo (a, b);
+							context.lineTo (x, y);
+							var _ = (draw.fill) ? context.fill () : context.stroke ();
+						break;
+
+						case 'ring':
+							context.beginPath ();
+							context.arc (x, y, r, a, b);
+							var _ = (draw.fill) ? context.fill () : context.stroke ();
 						break;
 					};
 				};
@@ -141,6 +162,7 @@ var game =
 		game.window.load ();
 		game.canvas.load ();
 		game.event.load ();
+		game.run ();
 	},
 
 	object:
@@ -162,7 +184,7 @@ var game =
 
 		paint.type = 'box';
 		paint.type = (paint.a) ? 'line' : paint.type;
-		paint.type = (paint.i) ? 'image' : paint.type;
+		paint.type = (paint.image) ? 'image' : paint.type;
 		paint.type = (paint.r) ? 'ring' : paint.type;
 
 		paint.z = (paint.z) ? paint.z : 0;
@@ -244,4 +266,21 @@ var game =
 };
 
 window.onload = game.load;
+
+game.data.load =
+{
+	image:
+	{
+		logo: 'logo.png'
+	}
+};
+
+game.run = function ()
+{
+	game.paint = {x: 100, y: 100, h: 100, w: 100, fill: true};
+	game.paint = {a: 300, b: 100, x: 400, y: 100};
+	game.paint = {a: 0, b: 2 * Math.PI, x: 500, y: 100, r: 50};
+	game.paint = {x: 700, y: 100, image: game.data.image.logo};
+};
+
 </script>
