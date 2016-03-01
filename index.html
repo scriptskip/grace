@@ -99,6 +99,9 @@ var game =
 					var x = draw.x;
 					var y = draw.y;
 
+					var _ = (draw.color) && (draw.fill != false) ? context.fillStyle = draw.color : undefined;
+							_ = (draw.color) && (draw.fill != true) ? context.strokeStyle = draw.color : undefined;
+
 					switch (draw.type)
 					{
 						case 'box':
@@ -306,9 +309,9 @@ game.data.load =
 game.run = function ()
 {
 
-	game.paint = { x: 100, y: 100, h: 100, w: 100 };
-	game.paint = { a: 300, b: 100, x: 400, y: 100 };
-	game.paint = { x: 500, y: 100, r: 50 };
+	game.paint = { x: 100, y: 100, h: 100, w: 100, color: 'blue' };
+	game.paint = { a: 300, b: 100, x: 400, y: 100, color: 'black' };
+	game.paint = { x: 500, y: 100, r: 50, color: 'red' };
 
 	game.paint = { x: 700, y: 100, image: game.data.image.logo };
 
