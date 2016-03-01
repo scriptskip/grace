@@ -11,6 +11,7 @@ var game =
 			var canvas = window.document.createElement ('canvas');
 				canvas.context = canvas.getContext ('2d');
 
+				canvas.font = { face: 'Arial', size: '1em' };
 				canvas.redraw = true;
 				canvas.scene = [];
 				canvas.style.position = 'absolute';
@@ -112,7 +113,7 @@ var game =
 							context.beginPath ();
 							context.moveTo (a, b);
 							context.lineTo (x, y);
-							var _ = (draw.fill != false) ? context.fill () : context.stroke ();
+							var _ = (draw.fill == true) ? context.fill () : context.stroke ();
 						break;
 
 						case 'ring':
@@ -122,7 +123,13 @@ var game =
 						break;
 
 						case 'text':
-							var _ = (draw.fill != false) ? context.fillText (draw.text, x, y) : context.strokeText (draw.text, x, y);
+							if (draw.font)
+							{
+								var face = draw.font.face || game.canvas.font.face;
+								var size = draw.font.size || game.canvas.font.size;
+								context.font = size + ' ' + face;
+							};
+							var	_ = (draw.fill != false) ? context.fillText (draw.text, x, y) : context.strokeText (draw.text, x, y);
 						break;
 					};
 				};
@@ -184,7 +191,7 @@ var game =
 
 	set paint (paint)
 	{
-		paint.id = (paint.id) ? paint.id : game.canvas.scene.length;
+		paint.id = paint.id || game.canvas.scene.length;
 
 		paint.type = 'box';
 		paint.type = (paint.a) ? 'line' : paint.type;
@@ -192,8 +199,21 @@ var game =
 		paint.type = (paint.r) ? 'ring' : paint.type;
 		paint.type = (paint.text) ? 'text' : paint.type;
 
-		paint.a = ((paint.type == 'ring') && (paint.a == undefined)) ? 0 : paint.a;
-		paint.b = ((paint.type == 'ring') && (paint.b == undefined)) ? 2 * Math.PI : paint.b;
+		switch (paint.type)
+		{
+			case 'ring':
+				paint.a = paint.a || 0;
+				paint.b = paint.b || 2 * Math.PI;
+			break;
+
+			case 'text':
+				if (paint.font)
+				{
+					game.canvas.font.face = paint.font.face || game.canvas.font.face;
+					game.canvas.font.size = paint.font.size || game.canvas.font.size;
+				};
+			break;
+		};
 
 		paint.z = (paint.z) ? paint.z : 0;
 		if (paint.z > game.canvas.z) game.canvas.z = paint.z;
@@ -285,11 +305,15 @@ game.data.load =
 
 game.run = function ()
 {
+
 	game.paint = { x: 100, y: 100, h: 100, w: 100 };
 	game.paint = { a: 300, b: 100, x: 400, y: 100 };
 	game.paint = { x: 500, y: 100, r: 50 };
+
 	game.paint = { x: 700, y: 100, image: game.data.image.logo };
-	game.paint = { x: 900, y: 100, text: 'text' };
+
+	game.paint = { x: 900, y: 200, text: 'text', font: { face: 'Consolas', size: '24px' } };
+	game.paint = { x: 900, y: 100, text: 'text', font: { size: '14px' } };
 };
 
 </script>
