@@ -88,52 +88,54 @@ var game =
 				for (var id = game.canvas.scene.length; (id--) && (game.canvas.scene.length > 0);)
 				{
 					var draw = game.canvas.scene[id];
-
-					var a = draw.a;
-					var b = draw.b;
-
-					var h = draw.h;
-					var r = draw.r;
-					var w = draw.w;
-
-					var x = draw.x;
-					var y = draw.y;
-
-					var _ = (draw.color) && (draw.fill != false) ? context.fillStyle = draw.color : undefined;
-							_ = (draw.color) && (draw.fill != true) ? context.strokeStyle = draw.color : undefined;
-
-					switch (draw.type)
+					if (draw.z == z)
 					{
-						case 'box':
-							var _ = (draw.fill != false) ? context.fillRect (x, y, w, h) : context.strokeRect (x, y, w, h);
-						break;
+						var a = draw.a;
+						var b = draw.b;
 
-						case 'image':
-							var _ = (h) ? context.drawImage (draw.image, x, y, w, h) : context.drawImage (draw.image, x, y);
-						break;
+						var h = draw.h;
+						var r = draw.r;
+						var w = draw.w;
 
-						case 'line':
-							context.beginPath ();
-							context.moveTo (a, b);
-							context.lineTo (x, y);
-							var _ = (draw.fill == true) ? context.fill () : context.stroke ();
-						break;
+						var x = draw.x;
+						var y = draw.y;
 
-						case 'ring':
-							context.beginPath ();
-							context.arc (x, y, r, a, b);
-							var _ = (draw.fill != false) ? context.fill () : context.stroke ();
-						break;
+						var _ = (draw.color) && (draw.fill != false) ? context.fillStyle = draw.color : undefined;
+								_ = (draw.color) && (draw.fill != true) ? context.strokeStyle = draw.color : undefined;
 
-						case 'text':
-							if (draw.font)
-							{
-								var face = draw.font.face || game.canvas.font.face;
-								var size = draw.font.size || game.canvas.font.size;
-								context.font = size + ' ' + face;
-							};
-							var	_ = (draw.fill != false) ? context.fillText (draw.text, x, y) : context.strokeText (draw.text, x, y);
-						break;
+						switch (draw.type)
+						{
+							case 'box':
+								var _ = (draw.fill != false) ? context.fillRect (x, y, w, h) : context.strokeRect (x, y, w, h);
+							break;
+
+							case 'image':
+								var _ = (h) ? context.drawImage (draw.image, x, y, w, h) : context.drawImage (draw.image, x, y);
+							break;
+
+							case 'line':
+								context.beginPath ();
+								context.moveTo (a, b);
+								context.lineTo (x, y);
+								var _ = (draw.fill == true) ? context.fill () : context.stroke ();
+							break;
+
+							case 'ring':
+								context.beginPath ();
+								context.arc (x, y, r, a, b);
+								var _ = (draw.fill != false) ? context.fill () : context.stroke ();
+							break;
+
+							case 'text':
+								if (draw.font)
+								{
+									var face = draw.font.face || game.canvas.font.face;
+									var size = draw.font.size || game.canvas.font.size;
+									context.font = size + ' ' + face;
+								};
+								var	_ = (draw.fill != false) ? context.fillText (draw.text, x, y) : context.strokeText (draw.text, x, y);
+							break;
+						};
 					};
 				};
 				z++;
@@ -218,8 +220,8 @@ var game =
 			break;
 		};
 
-		paint.z = (paint.z) ? paint.z : 0;
-		if (paint.z > game.canvas.z) game.canvas.z = paint.z;
+		paint.z = paint.z || 0;
+		game.canvas.z = (paint.z > game.canvas.z) ? game.canvas.z = paint.z : game.canvas.z;
 
 		game.canvas.scene[game.canvas.scene.length] = paint;
 		game.canvas.redraw = true;
@@ -309,9 +311,9 @@ game.data.load =
 game.run = function ()
 {
 
-	game.paint = { x: 100, y: 100, h: 100, w: 100, color: 'blue' };
-	game.paint = { a: 300, b: 100, x: 400, y: 100, color: 'black' };
-	game.paint = { x: 500, y: 100, r: 50, color: 'red' };
+	game.paint = { x: 100, y: 100, h: 100, w: 100, color: 'blue', z: 0 };
+	game.paint = { a: 100, b: 100, x: 300, y: 200, color: 'black', z: 1 };
+	game.paint = { x: 150, y: 100, r: 50, color: 'red', z: 2 };
 
 	game.paint = { x: 700, y: 100, image: game.data.image.logo };
 
