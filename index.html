@@ -28,6 +28,39 @@ var game =
 					canvas.context.clearRect (0, 0, canvas.width, canvas.height);
 				};
 
+				canvas.transform =
+				{
+					abs: function (x)
+					{
+						var abs = ((x > 0) && (x <=1)) ? x * canvas.width : x;
+						return abs;
+					},
+
+					ord: function (y)
+					{
+						var ord = ((y > 0) && (y <=1)) ? y * canvas.height : y;
+						return ord;
+					},
+
+					x: function (metric)
+					{
+						var k = metric.k;
+						var w = canvas.transform.abs (metric.w);
+						var x = canvas.transform.abs (metric.x);
+								x = (k) ? x - k * w : x;
+						return x;
+					},
+
+					y: function (metric)
+					{
+						var k = metric.k;
+						var h = canvas.transform.ord (metric.h);
+						var y = canvas.transform.ord (metric.y);
+								y = (k) ? y - k * h : y;
+						return y;
+					}
+				};
+
 				canvas.update = function ()
 				{
 					switch (game.event.type)
@@ -97,8 +130,8 @@ var game =
 						var r = draw.r;
 						var w = draw.w;
 
-						var x = draw.x;
-						var y = draw.y;
+						var x = game.canvas.transform.x ({ x: draw.x, k: draw.cx, w: draw.w || 2 * draw.r });
+						var y = game.canvas.transform.y ({ y: draw.y, k: draw.cy, h: draw.h || 2 * draw.r });
 
 						var _ = (draw.color) && (draw.fill != false) ? context.fillStyle = draw.color : undefined;
 								_ = (draw.color) && (draw.fill != true) ? context.strokeStyle = draw.color : undefined;
@@ -313,7 +346,7 @@ game.run = function ()
 
 	game.paint = { x: 100, y: 100, h: 100, w: 100, color: 'blue', z: 0 };
 	game.paint = { a: 100, b: 100, x: 300, y: 200, color: 'black', z: 1 };
-	game.paint = { x: 150, y: 100, r: 50, color: 'red', z: 2 };
+	game.paint = { x: 150, cx: 0.5, y: 100, r: 50, color: 'red', z: 2 };
 
 	game.paint = { x: 700, y: 100, image: game.data.image.logo };
 
