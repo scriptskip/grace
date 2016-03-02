@@ -36,10 +36,36 @@ var game =
 						return abs;
 					},
 
+					h: function (metric)
+					{
+						var h = canvas.transform.ord (metric.h);
+						var k = metric.k;
+						var w = canvas.transform.abs (metric.w);
+
+						h = (k) ? w * k : h;
+						return h;
+					},
+
 					ord: function (y)
 					{
 						var ord = ((y > 0) && (y <=1)) ? y * canvas.height : y;
 						return ord;
+					},
+
+					r: function (metric)
+					{
+						var r = (canvas.width > canvas.height) ? canvas.transform.ord (metric.r) : canvas.transform.abs (metric.r);
+						return r;
+					},
+
+					w: function (metric)
+					{
+						var h = canvas.transform.ord (metric.h);
+						var k = metric.k;
+						var w = canvas.transform.abs (metric.w);
+
+						w = (k) ? h * k : w;
+						return w;
 					},
 
 					x: function (metric)
@@ -123,15 +149,15 @@ var game =
 					var draw = game.canvas.scene[id];
 					if (draw.z == z)
 					{
-						var a = draw.a;
-						var b = draw.b;
+						var r = game.canvas.transform.r ({ r: draw.r });
+						var h = game.canvas.transform.h ({ h: draw.h, k: draw.hw, w: draw.w });
+						var w = game.canvas.transform.w ({ w: draw.w, k: draw.wh, h: draw.h });
 
-						var h = draw.h;
-						var r = draw.r;
-						var w = draw.w;
+						var a = (draw.type == 'ring') ? draw.a : game.canvas.transform.x ({ x: draw.a, k: draw.cx, w: w || 2 * r });
+						var b = (draw.type == 'ring') ? draw.b : game.canvas.transform.y ({ y: draw.b, k: draw.cy, h: h || 2 * r });
 
-						var x = game.canvas.transform.x ({ x: draw.x, k: draw.cx, w: draw.w || 2 * draw.r });
-						var y = game.canvas.transform.y ({ y: draw.y, k: draw.cy, h: draw.h || 2 * draw.r });
+						var x = game.canvas.transform.x ({ x: draw.x, k: draw.cx, w: w || 2 * r });
+						var y = game.canvas.transform.y ({ y: draw.y, k: draw.cy, h: h || 2 * r });
 
 						var _ = (draw.color) && (draw.fill != false) ? context.fillStyle = draw.color : undefined;
 								_ = (draw.color) && (draw.fill != true) ? context.strokeStyle = draw.color : undefined;
@@ -343,10 +369,10 @@ game.data.load =
 
 game.run = function ()
 {
+	game.paint = { a: 0.5, b: 0.5, x: 300, y: 200, color: 'black', z: 1 };
 
-	game.paint = { x: 100, y: 100, h: 100, w: 100, color: 'blue', z: 0 };
-	game.paint = { a: 100, b: 100, x: 300, y: 200, color: 'black', z: 1 };
-	game.paint = { x: 150, cx: 0.5, y: 100, r: 50, color: 'red', z: 2 };
+	game.paint = { x: 0.5, cx: 0.5, y: 0.5, cy: 0.5, h: 0.1, w: 0.1, color: 'blue', z: 1 };
+	game.paint = { x: 0.5, y: 0.5, r: 0.25, color: 'red', z: 0 };
 
 	game.paint = { x: 700, y: 100, image: game.data.image.logo };
 
