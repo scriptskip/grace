@@ -36,6 +36,19 @@ var game =
 						return abs;
 					},
 
+					font:
+					{
+						size: function (metric)
+						{
+							var h = canvas.transform.ord (metric.h);
+							var k = metric.k;
+							var w = canvas.transform.abs (metric.w);
+
+							h = (k) ? w * k : h;
+							return h + 'px';
+						}
+					},
+
 					h: function (metric)
 					{
 						var h = canvas.transform.ord (metric.h);
@@ -190,6 +203,7 @@ var game =
 								{
 									var face = draw.font.face || game.canvas.font.face;
 									var size = draw.font.size || game.canvas.font.size;
+											size = (typeof (draw.font.size) == 'number') ? game.canvas.transform.font.size ({ h: draw.font.size }) : size;
 
 									var align = (draw.font.align) ? context.textAlign = draw.font.align : undefined;
 									var baseline = (draw.font.baseline) ? context.textBaseline = draw.font.baseline : undefined;
@@ -379,7 +393,7 @@ game.run = function ()
 
 	game.paint = { x: 700, y: 100, image: game.data.image.logo };
 
-	game.paint = { x: 900, y: 200, text: 'text', font: { face: 'Consolas', size: '24px', align: 'center', baseline: 'middle' } };
+	game.paint = { x: 0.5, y: 0.5, text: 'text', font: { face: 'Consolas', size: 0.4, align: 'center', baseline: 'middle' }, z: 3 };
 	game.paint = { x: 900, y: 100, text: 'text', font: { size: '14px' } };
 };
 
