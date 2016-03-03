@@ -38,6 +38,26 @@ var game =
 
 					font:
 					{
+						autosize: function (font)
+						{
+							var face = font.face;
+							var size = canvas.transform.abs (font.width);
+							var text = font.text;
+
+							canvas.context.font = size + 'px ' + face;
+							var v = canvas.context.measureText (text).width;
+
+							var width = size;
+							while (Math.abs (v - width) > 1)
+							{
+								size = (v > width) ? 0.7 * size : 1.3 * size;
+								canvas.context.font = size + 'px ' + face;
+								v = canvas.context.measureText (text).width;
+							};
+							size = Math.floor (size) + 'px';
+							return size;
+						},
+
 						size: function (metric)
 						{
 							var h = canvas.transform.ord (metric.h);
@@ -207,7 +227,9 @@ var game =
 
 									var align = (draw.font.align) ? context.textAlign = draw.font.align : undefined;
 									var baseline = (draw.font.baseline) ? context.textBaseline = draw.font.baseline : undefined;
-									context.font = size + ' ' + face;
+
+
+									var width = (draw.font.width) ? context.font = game.canvas.transform.font.autosize ({ face: face, text: draw.text, width: draw.font.width }) + ' ' + face : context.font = size + ' ' + face;
 								};
 								var	_ = (draw.fill != false) ? context.fillText (draw.text, x, y) : context.strokeText (draw.text, x, y);
 							break;
@@ -394,7 +416,7 @@ game.run = function ()
 	game.paint = { x: 700, y: 100, image: game.data.image.logo };
 
 	game.paint = { x: 0.5, y: 0.5, text: 'text', font: { face: 'Consolas', size: 0.4, align: 'center', baseline: 'middle' }, z: 3 };
-	game.paint = { x: 900, y: 100, text: 'text', font: { size: '14px' } };
+	game.paint = { x: 0.1, y: 0.5, text: 'text', font: { width: 0.1 } };
 };
 
 </script>
