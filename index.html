@@ -279,6 +279,8 @@ var game =
 		game.run ();
 	},
 
+	o: {},
+
 	object:
 	{
 		create:
@@ -287,6 +289,18 @@ var game =
 			{
 				button.tag = 'button';
 				game.object.id = button;
+
+				button.update = function ()
+				{
+					switch (game.event.type)
+					{
+						case 'click':
+							window.log = 'click';
+						break;
+					};
+				};
+
+				game.object.load = button;
 			}
 		},
 
@@ -298,9 +312,24 @@ var game =
 		set id (object)
 		{
 			var tag = object.tag;
-			var group = game.object[tag];
-			var _ = (group == undefined) ? group = {} : undefined;
-			object.id = object.id || Object.keys (group).length;
+			var _ = (game.o[tag] == undefined) ? game.o[tag] = {} : undefined;
+			object.id = object.id || Object.keys (game.o[tag]).length;
+		},
+
+		set load (object)
+		{
+			game.o[object.tag][object.id] = object;
+		},
+
+		update: function ()
+		{
+				for (var tag in game.o)
+				{
+					for (var id in game.o[tag])
+					{
+						game.o[tag][id].update ();
+					};
+				};
 		}
 	},
 
@@ -340,6 +369,7 @@ var game =
 	update: function (update)
 	{
 		game.canvas.update ();
+		game.object.update ();
 	},
 
 	window:
