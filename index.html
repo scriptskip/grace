@@ -283,12 +283,24 @@ var game =
 	{
 		create:
 		{
-
+			set button (button)
+			{
+				button.tag = 'button';
+				game.object.id = button;
+			}
 		},
 
 		set destroy (destroy)
 		{
 
+		},
+
+		set id (object)
+		{
+			var tag = object.tag;
+			var group = game.object[tag];
+			var _ = (group == undefined) ? group = {} : undefined;
+			object.id = object.id || Object.keys (group).length;
 		}
 	},
 
@@ -417,6 +429,8 @@ game.run = function ()
 
 	game.paint = { x: 0.5, y: 0.5, text: 'text', font: { face: 'Consolas', size: 0.4, align: 'center', baseline: 'middle' }, z: 3 };
 	game.paint = { x: 0.1, y: 0.5, text: 'Text', font: { width: 200 } };
+
+	game.object.create.button = {};
 };
 
 </script>
