@@ -9,131 +9,130 @@ var game =
 		load: function ()
 		{
 			var canvas = window.document.createElement ('canvas');
-				canvas.context = canvas.getContext ('2d');
+					canvas.context = canvas.getContext ('2d');
+					canvas.font = { face: 'Arial', size: '1em' };
+					canvas.redraw = true;
+					canvas.scene = [];
+					canvas.style.position = 'absolute';
+					canvas.z = 0;
 
-				canvas.font = { face: 'Arial', size: '1em' };
-				canvas.redraw = true;
-				canvas.scene = [];
-				canvas.style.position = 'absolute';
-				canvas.z = 0;
+			canvas.autosize = function ()
+			{
+				this.height = window.innerHeight;
+				this.width = window.innerWidth;
+			};
 
-				canvas.autosize = function ()
+			canvas.clear = function ()
+			{
+				canvas.context.clearRect (0, 0, canvas.width, canvas.height);
+			};
+
+			canvas.transform =
+			{
+				abs: function (x)
 				{
-					this.height = window.innerHeight;
-					this.width = window.innerWidth;
-				};
+					var abs = ((x > 0) && (x <=1)) ? x * canvas.width : x;
+					return abs;
+				},
 
-				canvas.clear = function ()
+				font:
 				{
-					canvas.context.clearRect (0, 0, canvas.width, canvas.height);
-				};
-
-				canvas.transform =
-				{
-					abs: function (x)
+					autosize: function (font)
 					{
-						var abs = ((x > 0) && (x <=1)) ? x * canvas.width : x;
-						return abs;
-					},
+						var face = font.face;
+						var size = canvas.transform.abs (font.width) / font.text.length;
+						var text = font.text;
 
-					font:
-					{
-						autosize: function (font)
+						canvas.context.font = size + 'px ' + face;
+						var w = canvas.context.measureText (text).width;
+
+						var width = canvas.transform.abs (font.width);
+						while (Math.abs (w - width) > 1)
 						{
-							var face = font.face;
-							var size = canvas.transform.abs (font.width) / font.text.length;
-							var text = font.text;
-
+							size = (w > width) ? 0.9 * size : 1.5 * size;
 							canvas.context.font = size + 'px ' + face;
-							var w = canvas.context.measureText (text).width;
-
-							var width = canvas.transform.abs (font.width);
-							while (Math.abs (w - width) > 1)
-							{
-								size = (w > width) ? 0.9 * size : 1.5 * size;
-								canvas.context.font = size + 'px ' + face;
-								w = canvas.context.measureText (text).width;
-							};
-							size = Math.floor (size) + 'px';
-							return size;
-						},
-
-						size: function (metric)
-						{
-							var h = canvas.transform.ord (metric.h);
-							var k = metric.k;
-							var w = canvas.transform.abs (metric.w);
-
-							h = (k) ? w * k : h;
-							return h + 'px';
-						}
+							w = canvas.context.measureText (text).width;
+						};
+						size = Math.floor (size) + 'px';
+						return size;
 					},
 
-					h: function (metric)
+					size: function (metric)
 					{
 						var h = canvas.transform.ord (metric.h);
 						var k = metric.k;
 						var w = canvas.transform.abs (metric.w);
 
 						h = (k) ? w * k : h;
-						return h;
-					},
-
-					ord: function (y)
-					{
-						var ord = ((y > 0) && (y <=1)) ? y * canvas.height : y;
-						return ord;
-					},
-
-					r: function (metric)
-					{
-						var r = (canvas.width > canvas.height) ? canvas.transform.ord (metric.r) : canvas.transform.abs (metric.r);
-						return r;
-					},
-
-					w: function (metric)
-					{
-						var h = canvas.transform.ord (metric.h);
-						var k = metric.k;
-						var w = canvas.transform.abs (metric.w);
-
-						w = (k) ? h * k : w;
-						return w;
-					},
-
-					x: function (metric)
-					{
-						var k = metric.k;
-						var w = canvas.transform.abs (metric.w);
-						var x = canvas.transform.abs (metric.x);
-								x = (k) ? x - k * w : x;
-						return x;
-					},
-
-					y: function (metric)
-					{
-						var k = metric.k;
-						var h = canvas.transform.ord (metric.h);
-						var y = canvas.transform.ord (metric.y);
-								y = (k) ? y - k * h : y;
-						return y;
+						return h + 'px';
 					}
-				};
+				},
 
-				canvas.update = function ()
+				h: function (metric)
 				{
-					switch (game.event.type)
-					{
-						case 'load':
-							canvas.autosize ();
-						break;
+					var h = canvas.transform.ord (metric.h);
+					var k = metric.k;
+					var w = canvas.transform.abs (metric.w);
 
-						case 'resize':
-							canvas.autosize ();
-							canvas.redraw = true;
-						break;
-					};
+					h = (k) ? w * k : h;
+					return h;
+				},
+
+				ord: function (y)
+				{
+					var ord = ((y > 0) && (y <=1)) ? y * canvas.height : y;
+					return ord;
+				},
+
+				r: function (metric)
+				{
+					var r = (canvas.width > canvas.height) ? canvas.transform.ord (metric.r) : canvas.transform.abs (metric.r);
+					return r;
+				},
+
+				w: function (metric)
+				{
+					var h = canvas.transform.ord (metric.h);
+					var k = metric.k;
+					var w = canvas.transform.abs (metric.w);
+
+					w = (k) ? h * k : w;
+					return w;
+				},
+
+				x: function (metric)
+				{
+					var k = metric.k;
+					var w = canvas.transform.abs (metric.w);
+					var x = canvas.transform.abs (metric.x);
+							x = (k) ? x - k * w : x;
+					return x;
+				},
+
+				y: function (metric)
+				{
+					var k = metric.k;
+					var h = canvas.transform.ord (metric.h);
+					var y = canvas.transform.ord (metric.y);
+							y = (k) ? y - k * h : y;
+					return y;
+				}
+			};
+
+			canvas.update = function ()
+			{
+				switch (game.event.type)
+				{
+					case 'load':
+						canvas.autosize ();
+					break;
+
+					case 'resize':
+						canvas.autosize ();
+						canvas.redraw = true;
+					break;
 				};
+			};
 
 			delete game['canvas'];
 			game.canvas = canvas;
@@ -164,7 +163,6 @@ var game =
 			};
 		}
 	},
-
 
 	draw: function ()
 	{
