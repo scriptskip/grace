@@ -290,12 +290,20 @@ var game =
 				button.tag = 'button';
 				game.object.id = button;
 
+				button.click = function ()
+				{
+					if (game.object.in (button))
+					{
+						window.log = 'in';
+					};
+				};
+
 				button.update = function ()
 				{
 					switch (game.event.type)
 					{
 						case 'click':
-							window.log = 'click';
+							button.click ();
 						break;
 					};
 				};
@@ -316,6 +324,16 @@ var game =
 			object.id = object.id || Object.keys (game.o[tag]).length;
 		},
 
+		in: function (object)
+		{
+			var h = game.canvas.transform.h ({ h: object.h, k: object.hw, w: object.w });
+			var w = game.canvas.transform.w ({ w: object.w, k: object.wh, h: object.h });
+			var x = game.canvas.transform.x ({ x: object.x, k: object.cx, w: object.w });
+			var y = game.canvas.transform.y ({ y: object.y, k: object.cy, h: object.h });
+			var result = ((game.event.x >= x) && (game.event.x <= x + w) && (game.event.y >= y) && (game.event.y <= y + h));
+			return result;
+		},
+
 		set load (object)
 		{
 			game.o[object.tag][object.id] = object;
@@ -323,13 +341,13 @@ var game =
 
 		update: function ()
 		{
-				for (var tag in game.o)
+			for (var tag in game.o)
+			{
+				for (var id in game.o[tag])
 				{
-					for (var id in game.o[tag])
-					{
-						game.o[tag][id].update ();
-					};
+					game.o[tag][id].update ();
 				};
+			};
 		}
 	},
 
@@ -460,7 +478,7 @@ game.run = function ()
 	game.paint = { x: 0.5, y: 0.5, text: 'text', font: { face: 'Consolas', size: 0.4, align: 'center', baseline: 'middle' }, z: 3 };
 	game.paint = { x: 0.1, y: 0.5, text: 'Text', font: { width: 200 } };
 
-	game.object.create.button = {};
+	game.object.create.button = {x: 0.5, y: 0.5, h: 100, w: 100};
 };
 
 </script>
