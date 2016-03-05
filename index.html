@@ -292,9 +292,20 @@ var game =
 				{
 					if (game.object.in (button))
 					{
-						window.log = 'in';
+						var _ = (button.action) ? button.action () : undefined;
 					};
 				};
+
+				button.show = function ()
+				{
+					var color = button.color;
+					var h = button.h;
+					var w = button.w;
+					var x = button.x;
+					var y = button.y;
+					var z = button.z;
+					game.paint = { color: color, h: h, w: w, x: x, y: y, z: z };
+				},
 
 				button.update = function ()
 				{
@@ -306,6 +317,7 @@ var game =
 					};
 				};
 
+				button.show ();
 				game.object.load = button;
 			}
 		},
@@ -476,7 +488,7 @@ game.run = function ()
 	game.paint = { x: 0.5, y: 0.5, text: 'text', font: { face: 'Consolas', size: 0.4, align: 'center', baseline: 'middle' }, z: 3 };
 	game.paint = { x: 0.1, y: 0.5, text: 'Text', font: { width: 200 } };
 
-	game.object.create.button = {x: 0.5, y: 0.5, h: 100, w: 100};
+	game.object.create.button = { action: function () { window.log = 'click'; }, x: 0.1, y: 0.5, h: 100, w: 100};
 };
 
 </script>
