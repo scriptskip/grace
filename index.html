@@ -27,6 +27,34 @@ var game =
 				canvas.context.clearRect (0, 0, canvas.width, canvas.height);
 			};
 
+			canvas.draw =
+			{
+				set clear (draw)
+				{
+					for (var id = game.canvas.scene.length; id--;)
+					{
+						for (var key in draw)
+						{
+							if (draw[key] == game.canvas.scene[id][key])
+							{
+								game.canvas.scene.splice (id, 1);
+							};
+						};
+					};
+					canvas.redraw = true;
+				},
+
+				type: function (draw)
+				{
+					var type = 'box';
+							type = (draw.a) ? 'line' : type;
+							type = (draw.image) ? 'image' : type;
+							type = (draw.r) ? 'ring' : type;
+							type = (draw.text) ? 'text' : type;
+					return type;
+				}
+			};
+
 			canvas.transform =
 			{
 				abs: function (x)
@@ -291,15 +319,28 @@ var game =
 				button.tag = 'button';
 				game.object.id = button;
 
+				button.active = button.active || {};
+				button.in = undefined;
+
 				button.animate = function ()
 				{
 					if (game.object.in (button))
 					{
-						game.canvas.style.cursor = 'pointer';
+						if (!button.in)
+						{
+							button.in = true;
+							game.canvas.style.cursor = 'pointer';
+							button.show ({ color: button.active.color});
+						};
 					}
 					else
 					{
-						game.canvas.style.cursor = 'default';
+						if (button.in)
+						{
+							button.in = false;
+							game.canvas.style.cursor = 'default';
+							button.show ({ color: button.color});
+						};
 					};
 				};
 
@@ -321,8 +362,19 @@ var game =
 					var x = button.x;
 					var y = button.y;
 					var z = button.z;
-					delete game.canvas.scene[id];
-					game.paint = { color: color, h: h, id: id, image: image, w: w, x: x, y: y, z: z };
+
+					game.canvas.draw.clear = { id: id };
+
+					switch (game.canvas.draw.type (button))
+					{
+						case 'box':
+							game.paint = { color: color, h: h, id: id, w: w, x: x, y: y, z: z };
+						break;
+
+						case 'image':
+							game.paint = { image: image, h: h, id: id, w: w, x: x, y: y, z: z };
+						break;
+					};
 				},
 
 				button.update = function ()
@@ -387,11 +439,7 @@ var game =
 	{
 		paint.id = paint.id || game.canvas.scene.length;
 
-		paint.type = 'box';
-		paint.type = (paint.a) ? 'line' : paint.type;
-		paint.type = (paint.image) ? 'image' : paint.type;
-		paint.type = (paint.r) ? 'ring' : paint.type;
-		paint.type = (paint.text) ? 'text' : paint.type;
+		paint.type = game.canvas.draw.type (paint);
 
 		switch (paint.type)
 		{
@@ -500,7 +548,7 @@ game.data.load =
 
 game.run = function ()
 {
-	game.paint = { a: 0.5, b: 0.5, color: 'black', lw: 100, x: 300, y: 200,  z: 1 };
+	game.paint = { a: 0.5, b: 0.5, color: 'black', lw: 10, x: 300, y: 200,  z: 1 };
 
 	game.paint = { x: 0.5, cx: 0.5, y: 0.5, cy: 0.5, h: 0.1, w: 0.1, color: 'blue', z: 1 };
 	game.paint = { x: 0.5, y: 0.5, r: 0.25, color: 'red', z: 0 };
@@ -508,9 +556,23 @@ game.run = function ()
 	game.paint = { x: 700, y: 100, image: game.data.image.logo };
 
 	game.paint = { x: 0.5, y: 0.5, text: 'text', font: { face: 'Consolas', size: 0.4, align: 'center', baseline: 'middle' }, z: 3 };
-	game.paint = { x: 0.1, y: 0.5, text: 'Text', font: { width: 200 } };
 
-	game.object.create.button = { action: function () { window.log = 'click'; }, x: 0.1, y: 0.5, h: 100, w: 100};
+	game.object.create.button =
+	{
+		action: function ()
+		{
+			window.log = 'click';
+		},
+		active:
+		{
+			color: '#aaa'
+		},
+		color: '#888',
+		h: 100,
+		w: 100,
+		x: 0.1,
+		y: 0.5
+	};
 };
 
 </script>
