@@ -330,7 +330,7 @@ var game =
 						{
 							button.in = true;
 							game.canvas.style.cursor = 'pointer';
-							button.show ({ color: button.active.color});
+							button.show ({ color: button.active.color, image: button.active.image });
 						};
 					}
 					else
@@ -339,7 +339,7 @@ var game =
 						{
 							button.in = false;
 							game.canvas.style.cursor = 'default';
-							button.show ({ color: button.color});
+							button.show ({ color: button.color, image: button.active.image });
 						};
 					};
 				};
@@ -573,6 +573,22 @@ game.run = function ()
 		x: 0.1,
 		y: 0.5
 	};
-};
 
+	game.object.create.button =
+	{
+		action: function ()
+		{
+			window.log = 'click';
+		},
+		active:
+		{
+			color: '#aaa'
+		},
+		color: '#888',
+		h: 100,
+		w: 100,
+		x: 0.1,
+		y: 0.7
+	};
+};
 </script>
