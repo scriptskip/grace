@@ -457,11 +457,11 @@ var game =
 		in: function (object)
 		{
 			var result;
-			var x = game.canvas.transform.x ({ x: object.x, k: object.cx, w: object.w || object.r });
-			var y = game.canvas.transform.y ({ y: object.y, k: object.cy, h: object.h || object.r });
+			var r = game.canvas.transform.r ({ r: object.r });
+			var x = game.canvas.transform.x ({ x: object.x, k: object.cx, w: object.w || 2 * r });
+			var y = game.canvas.transform.y ({ y: object.y, k: object.cy, h: object.h || 2 * r });
 			if (object.r)
 			{
-				var r = game.canvas.transform.r ({ r: object.r });
 				var R = Math.sqrt (Math.pow (game.event.x - x, 2) + Math.pow (game.event.y - y, 2));
 				result = (R <= r);
 			}
