@@ -278,7 +278,9 @@ var game =
 			game.event.manager (event);
 
 			window.onclick = game.event.manager;
+			window.onmousedown = game.event.manager;
 			window.onmousemove = game.event.manager;
+			window.onmouseup = game.event.manager;
 			window.onresize = game.event.manager;
 			window.ontick = game.event.manager;
 		},
@@ -321,6 +323,7 @@ var game =
 
 				button.active = button.active || {};
 				button.in = undefined;
+				button.pressed = button.pressed || {};
 
 				button.animate = function ()
 				{
@@ -349,6 +352,23 @@ var game =
 					if (game.object.in (button))
 					{
 						var _ = (button.action) ? button.action () : undefined;
+					};
+				};
+
+				button.press = function (press)
+				{
+					if (game.object.in (button))
+					{
+						if (press)
+						{
+							game.canvas.style.cursor = 'pointer';
+							button.show ({ color: button.pressed.color, image: button.pressed.image });
+						}
+						else
+						{
+							game.canvas.style.cursor = 'default';
+							button.show ({ color: button.color, image: button.image });
+						};
 					};
 				};
 
@@ -403,8 +423,16 @@ var game =
 							button.click ();
 						break;
 
+						case 'mousedown':
+							button.press (true);
+						break;
+
 						case 'mousemove':
 							button.animate ();
+						break;
+
+						case 'mouseup':
+							button.press (false);
 						break;
 					};
 				};
@@ -572,6 +600,7 @@ game.data.load =
 	{
 		button: 'button.svg',
 		button_active: 'button_active.svg',
+		button_press: 'button_press.svg',
 		logo: 'logo.png'
 	}
 };
@@ -629,12 +658,10 @@ game.run = function ()
 		{
 			window.log = 'image';
 		},
-		active:
-		{
-			image: game.data.image.button_active
-		},
+		active: { image: game.data.image.button_active },
 		h: 0.1,
 		image: game.data.image.button,
+		pressed: { image: game.data.image.button_press },
 		wh: 2,
 		x: 0.1,
 		y: 0.3,
@@ -647,13 +674,11 @@ game.run = function ()
 		{
 			window.log = 'ring';
 		},
-		active:
-		{
-			color: '#aaa'
-		},
+		active: { color: '#aaa' },
 		color: '#888',
 		cx: -0.5,
 		cy: -0.5,
+		pressed: { color: '#ccc' },
 		r: 0.1,
 		x: 0.1,
 		y: 0.05
