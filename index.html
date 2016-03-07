@@ -355,13 +355,18 @@ var game =
 				button.show = function (draw)
 				{
 					var color = draw.color;
+					var cx = button.cx;
+					var cy = button.cy;
 					var font = button.font || {};
 							font.width = button.w;
 					var h = button.h;
+					var hw = button.hw;
 					var id = 'button' + button.id;
 					var image = draw.image;
+					var r = button.r;
 					var text = button.text;
 					var w = button.w;
+					var wh = button.wh;
 					var x = button.x;
 					var y = button.y;
 					var z = button.z;
@@ -377,7 +382,11 @@ var game =
 						break;
 
 						case 'image':
-							game.paint = { h: h, id: id, image: image, w: w, x: x, y: y, z: z };
+							game.paint = { h: h, hw: hw, id: id, image: image, w: w, wh: wh, x: x, y: y, z: z };
+						break;
+
+						case 'ring':
+							game.paint = { color: color, cx: cx, cy: cy, id: id, r: r, x: x, y: y, z: z };
 						break;
 
 						case 'text':
@@ -419,11 +428,21 @@ var game =
 
 		in: function (object)
 		{
-			var h = game.canvas.transform.h ({ h: object.h, k: object.hw, w: object.w });
-			var w = game.canvas.transform.w ({ w: object.w, k: object.wh, h: object.h });
-			var x = game.canvas.transform.x ({ x: object.x, k: object.cx, w: object.w });
-			var y = game.canvas.transform.y ({ y: object.y, k: object.cy, h: object.h });
-			var result = ((game.event.x >= x) && (game.event.x <= x + w) && (game.event.y >= y) && (game.event.y <= y + h));
+			var result;
+			var x = game.canvas.transform.x ({ x: object.x, k: object.cx, w: object.w || object.r });
+			var y = game.canvas.transform.y ({ y: object.y, k: object.cy, h: object.h || object.r });
+			if (object.r)
+			{
+				var r = game.canvas.transform.r ({ r: object.r });
+				var R = Math.sqrt (Math.pow (game.event.x - x, 2) + Math.pow (game.event.y - y, 2));
+				result = (R <= r);
+			}
+			else
+			{
+				var h = game.canvas.transform.h ({ h: object.h, k: object.hw, w: object.w });
+				var w = game.canvas.transform.w ({ w: object.w, k: object.wh, h: object.h });
+				result = ((game.event.x >= x) && (game.event.x <= x + w) && (game.event.y >= y) && (game.event.y <= y + h));
+			};
 			return result;
 		},
 
@@ -614,12 +633,30 @@ game.run = function ()
 		{
 			image: game.data.image.button_active
 		},
-		h: 100,
+		h: 0.1,
 		image: game.data.image.button,
-		w: 200,
+		wh: 2,
 		x: 0.1,
 		y: 0.3,
 		z: 3
+	};
+
+	game.object.create.button =
+	{
+		action: function ()
+		{
+			window.log = 'ring';
+		},
+		active:
+		{
+			color: '#aaa'
+		},
+		color: '#888',
+		cx: -0.5,
+		cy: -0.5,
+		r: 0.1,
+		x: 0.1,
+		y: 0.05
 	};
 };
 </script>
