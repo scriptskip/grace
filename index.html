@@ -339,7 +339,7 @@ var game =
 						{
 							button.in = false;
 							game.canvas.style.cursor = 'default';
-							button.show ({ color: button.color, image: button.active.image });
+							button.show ({ color: button.color, image: button.image });
 						};
 					};
 				};
@@ -354,8 +354,6 @@ var game =
 
 				button.show = function (draw)
 				{
-
-
 					var color = draw.color;
 					var font = button.font || {};
 							font.width = button.w;
@@ -402,7 +400,7 @@ var game =
 					};
 				};
 
-				button.show ({ color: button.color, image: button.color });
+				button.show ({ color: button.color, image: button.image });
 				game.object.load = button;
 			}
 		},
@@ -553,6 +551,8 @@ game.data.load =
 {
 	image:
 	{
+		button: 'button.svg',
+		button_active: 'button_active.svg',
 		logo: 'logo.png'
 	}
 };
@@ -589,7 +589,7 @@ game.run = function ()
 	{
 		action: function ()
 		{
-			window.log = 'click';
+			window.log = 'link';
 		},
 		active:
 		{
@@ -602,6 +602,24 @@ game.run = function ()
 		w: 100,
 		x: 0.1,
 		y: 0.7
+	};
+
+	game.object.create.button =
+	{
+		action: function ()
+		{
+			window.log = 'image';
+		},
+		active:
+		{
+			image: game.data.image.button_active
+		},
+		h: 100,
+		image: game.data.image.button,
+		w: 200,
+		x: 0.1,
+		y: 0.3,
+		z: 3
 	};
 };
 </script>
