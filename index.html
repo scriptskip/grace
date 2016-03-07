@@ -273,11 +273,14 @@ var game =
 
 	event:
 	{
+		block: function () { return false; },
+
 		load: function ()
 		{
 			game.event.manager (event);
 
 			window.onclick = game.event.manager;
+			window.oncontextmenu = game.event.block;
 			window.onmousedown = game.event.manager;
 			window.onmousemove = game.event.manager;
 			window.onmouseup = game.event.manager;
@@ -361,12 +364,10 @@ var game =
 					{
 						if (press)
 						{
-							game.canvas.style.cursor = 'pointer';
 							button.show ({ color: button.pressed.color, image: button.pressed.image });
 						}
 						else
 						{
-							game.canvas.style.cursor = 'default';
 							button.show ({ color: button.color, image: button.image });
 						};
 					};
@@ -628,6 +629,7 @@ game.run = function ()
 		},
 		color: '#888',
 		h: 100,
+		pressed: { color: '#ccc' },
 		w: 100,
 		x: 0.1,
 		y: 0.5
@@ -646,6 +648,7 @@ game.run = function ()
 		color: '#888',
 		font: { align: 'left', baseline: 'top' },
 		h: 100,
+		pressed: { color: '#ccc' },
 		text: 'button',
 		w: 100,
 		x: 0.1,
