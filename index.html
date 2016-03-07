@@ -81,7 +81,7 @@ var game =
 							canvas.context.font = size + 'px ' + face;
 							w = canvas.context.measureText (text).width;
 						};
-						size = Math.floor (size) + 'px';
+						size = Math.floor (size);
 						return size;
 					},
 
@@ -257,7 +257,7 @@ var game =
 									var baseline = (draw.font.baseline) ? context.textBaseline = draw.font.baseline : undefined;
 
 
-									var width = (draw.font.width) ? context.font = game.canvas.transform.font.autosize ({ face: face, text: draw.text, width: draw.font.width }) + ' ' + face : context.font = size + ' ' + face;
+									var width = (draw.font.width) ? context.font = game.canvas.transform.font.autosize ({ face: face, text: draw.text, width: draw.font.width }) + 'px ' + face : context.font = size + ' ' + face;
 								};
 								var	_ = (draw.fill != false) ? context.fillText (draw.text, x, y) : context.strokeText (draw.text, x, y);
 							break;
@@ -354,14 +354,21 @@ var game =
 
 				button.show = function (draw)
 				{
+
+
 					var color = draw.color;
+					var font = button.font || {};
+							font.width = button.w;
 					var h = button.h;
 					var id = 'button' + button.id;
 					var image = draw.image;
+					var text = button.text;
 					var w = button.w;
 					var x = button.x;
 					var y = button.y;
 					var z = button.z;
+
+					button.h = (button.text) ? game.canvas.transform.font.autosize ({ face: font.face, text: button.text, width: font.width }) : button.h;
 
 					game.canvas.draw.clear = { id: id };
 
@@ -372,7 +379,11 @@ var game =
 						break;
 
 						case 'image':
-							game.paint = { image: image, h: h, id: id, w: w, x: x, y: y, z: z };
+							game.paint = { h: h, id: id, image: image, w: w, x: x, y: y, z: z };
+						break;
+
+						case 'text':
+							game.paint = { color: color, font: font, id: id, text: text, x: x, y: y, z: z };
 						break;
 					};
 				},
@@ -585,7 +596,9 @@ game.run = function ()
 			color: '#aaa'
 		},
 		color: '#888',
+		font: { align: 'left', baseline: 'top' },
 		h: 100,
+		text: 'button',
 		w: 100,
 		x: 0.1,
 		y: 0.7
