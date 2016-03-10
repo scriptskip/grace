@@ -319,6 +319,11 @@ var game =
 	{
 		create:
 		{
+			set asteroid (asteroid)
+			{
+
+			},
+
 			set button (button)
 			{
 				button.tag = 'button';
@@ -440,6 +445,38 @@ var game =
 
 				button.show ({ color: button.color, image: button.image });
 				game.object.load = button;
+			},
+
+			set comet (comet)
+			{
+
+			},
+
+			set galaxy (galaxy)
+			{
+				game.object.create.star = {};
+			},
+
+			set planet (planet)
+			{
+				game.object.create.satellite = {};
+			},
+
+			set satellite (satellite)
+			{
+				
+			},
+
+			set star (star)
+			{
+				game.object.create.asteroid = {};
+				game.object.create.comet = {};
+				game.object.create.planet = {};
+			},
+
+			set universe (universe)
+			{
+				game.object.create.galaxy = {};
 			}
 		},
 
@@ -657,10 +694,7 @@ game.run = function ()
 
 	game.object.create.button =
 	{
-		action: function ()
-		{
-			window.log = 'image';
-		},
+		action: function () { window.log = 'image'; },
 		active: { image: game.data.image.button_active },
 		h: 0.1,
 		image: game.data.image.button,
@@ -673,10 +707,7 @@ game.run = function ()
 
 	game.object.create.button =
 	{
-		action: function ()
-		{
-			window.log = 'ring';
-		},
+		action: function () { window.log = 'ring'; },
 		active: { color: '#aaa' },
 		color: '#888',
 		cx: -0.5,
