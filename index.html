@@ -199,18 +199,32 @@ var game =
 
 							animation.play = function (metric)
 							{
+								animation.cx = metric.cx;
+								animation.cy = metric.cy;
 								animation.delay = metric.delay || animation.delay;
+								animation.h = metric.h || animation.h;
+								animation.hw = metric.hw || animation.hw;
+								animation.w = metric.w || animation.w;
+								animation.wh = metric.wh || animation.wh;
 								animation.x = metric.x;
 								animation.y = metric.y;
+								animation.z = metric.z || 0;
 								game.object.load = animation;
 							};
 
 							animation.show = function (image)
 							{
+								var cx = animation.cx;
+								var cy = animation.cy;
+								var h = animation.h;
+								var hw = animation.hw;
+								var w = animation.w;
+								var wh = animation.wh;
 								var x = animation.x;
 								var y = animation.y;
+								var z = animation.z;
 								game.canvas.draw.clear = { id: animation.tag + animation.id };
-								game.paint = { id: animation.tag + animation.id, image: image, x: x, y: y };
+								game.paint = { cx: cx, cy: cy, h: h, hw: hw, id: animation.tag + animation.id, image: image, w: w, wh: wh, x: x, y: y, z: z };
 							};
 
 							animation.update = function ()
@@ -695,6 +709,7 @@ game.data.load =
 	{
 		test:
 		{
+			delays: [ 300, 200, 100 ],
 			frames: [ 'button.svg', 'button_active.svg', 'button_press.svg' ],
 			loop: true
 		}
@@ -776,7 +791,7 @@ game.run = function ()
 		action: function ()
 		{
 			window.log = 'ring';
-			game.data.animation.test.play ({ delay: 100, x: 300, y: 100 });
+			game.data.animation.test.play ({ cx: 0.5, cy: 0.5, delay: 100, h: 0.1, wh: 2, x: 0.5, y: 0.5, z: 4 });
 		},
 		active: { color: '#aaa' },
 		color: '#888',
