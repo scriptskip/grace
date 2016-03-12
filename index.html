@@ -171,6 +171,7 @@ var game =
 
 	data:
 	{
+		animation: {},
 		image: {},
 
 		set load (data)
@@ -179,12 +180,68 @@ var game =
 			{
 				switch (tag)
 				{
+					case 'animation':
+						for (var id in data[tag])
+						{
+							var animation = data[tag][id];
+								animation.tag = 'animation';
+								game.object.id = animation;
+
+								animation.step = 0;
+								animation.time = 0;
+
+							for (var i = animation.frames.length; i--; )
+							{
+								var image = new Image ();
+									image.src = animation.frames[i];
+								animation.frames[i] = image;
+							};
+
+							animation.play = function (metric)
+							{
+								animation.delay = metric.delay;
+								animation.x = metric.x;
+								animation.y = metric.y;
+								game.object.load = animation;
+							};
+
+							animation.show = function (image)
+							{
+								var x = animation.x;
+								var y = animation.y;
+								game.canvas.draw.clear = { id: animation.tag + animation.id };
+								game.paint = { id: animation.tag + animation.id, image: image, x: x, y: y };
+							};
+
+							animation.update = function ()
+							{
+								switch (game.event.type)
+								{
+									case 'tick':
+										if (animation.step + 1 < animation.frames.length)
+										{
+											var image = animation.frames[animation.step];
+											animation.show (image);
+											animation.step++;
+										}
+										else
+										{
+											animation.step = 0;
+										};
+									break;
+								};
+							};
+
+							game.data.animation[id] = animation;
+						};
+					break;
+
 					case 'image':
 						for (var id in data[tag])
 						{
 							var image = new Image ();
 								image.src = data[tag][id];
-								game.data.image[id] = image;
+							game.data.image[id] = image;
 						};
 					break;
 				};
@@ -480,11 +537,6 @@ var game =
 			}
 		},
 
-		set destroy (destroy)
-		{
-
-		},
-
 		set id (object)
 		{
 			var tag = object.tag;
@@ -634,6 +686,16 @@ window.onload = game.load;
 
 game.data.load =
 {
+	animation:
+	{
+		test:
+		{
+			delay: 300,
+			frames: [ 'button.svg', 'button_active.svg', 'button_press.svg' ],
+			loop: true
+		}
+	},
+
 	image:
 	{
 		button: 'button.svg',
@@ -707,7 +769,11 @@ game.run = function ()
 
 	game.object.create.button =
 	{
-		action: function () { window.log = 'ring'; },
+		action: function ()
+		{
+			window.log = 'ring';
+			game.data.animation.test.play ({ delay: 300, x: 300, y: 100 });
+		},
 		active: { color: '#aaa' },
 		color: '#888',
 		cx: -0.5,
