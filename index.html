@@ -202,6 +202,7 @@ var game =
 								animation.cx = metric.cx;
 								animation.cy = metric.cy;
 								animation.delay = metric.delay || animation.delay;
+								animation.delay = (animation.delays) ? animation.delays[animation.step] : animation.delay;
 								animation.h = metric.h || animation.h;
 								animation.hw = metric.hw || animation.hw;
 								animation.w = metric.w || animation.w;
@@ -233,13 +234,16 @@ var game =
 								{
 									case 'tick':
 										animation.time += game.event.tick;
+
 										if (animation.time / animation.delay > animation.step)
 										{
 											if (animation.step + 1 <= animation.frames.length)
 											{
+												animation.delay = (animation.delays) ? animation.delays[animation.step] : animation.delay;
 												var image = animation.frames[animation.step];
 												animation.show (image);
 												animation.step++;
+
 											}
 											else
 											{
@@ -709,7 +713,7 @@ game.data.load =
 	{
 		test:
 		{
-			delays: [ 300, 200, 100 ],
+			delays: [ 200, 300, 100 ],
 			frames: [ 'button.svg', 'button_active.svg', 'button_press.svg' ],
 			loop: true
 		}
