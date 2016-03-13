@@ -188,6 +188,7 @@ var game =
 								game.object.id = animation;
 
 								animation.step = 0;
+								animation.stop = false;
 								animation.time = 0;
 
 							for (var i = animation.frames.length; i--; )
@@ -205,6 +206,7 @@ var game =
 								animation.delay = (animation.delays) ? animation.delays[animation.step] : animation.delay;
 								animation.h = metric.h || animation.h;
 								animation.hw = metric.hw || animation.hw;
+								animation.stop = false;
 								animation.w = metric.w || animation.w;
 								animation.wh = metric.wh || animation.wh;
 								animation.x = metric.x;
@@ -233,22 +235,29 @@ var game =
 								switch (game.event.type)
 								{
 									case 'tick':
-										animation.time += game.event.tick;
-
-										if (animation.time / animation.delay > animation.step)
+										if (animation.stop == false)
 										{
-											if (animation.step + 1 <= animation.frames.length)
-											{
-												animation.delay = (animation.delays) ? animation.delays[animation.step] : animation.delay;
-												var image = animation.frames[animation.step];
-												animation.show (image);
-												animation.step++;
+											animation.time += game.event.tick;
 
-											}
-											else
+											if (animation.time / animation.delay > animation.step)
 											{
-												animation.step = 0;
-												animation.time = 0;
+												if (animation.step + 1 <= animation.frames.length)
+												{
+													animation.delay = (animation.delays) ? animation.delays[animation.step] : animation.delay;
+													var image = animation.frames[animation.step];
+													animation.show (image);
+													animation.step++;
+
+												}
+												else
+												{
+													animation.step = 0;
+													animation.time = 0;
+													if (typeof (animation.loop) == 'number')
+													{
+														animation.loop = (animation.loop - 1 > 0) ? animation.loop -= 1 : animation.stop = true;
+													};
+												};
 											};
 										};
 									break;
@@ -715,7 +724,7 @@ game.data.load =
 		{
 			delays: [ 200, 300, 100 ],
 			frames: [ 'button.svg', 'button_active.svg', 'button_press.svg' ],
-			loop: true
+			loop: 3
 		}
 	},
 
