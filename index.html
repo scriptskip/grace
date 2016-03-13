@@ -187,6 +187,7 @@ var game =
 								animation.tag = 'animation';
 								game.object.id = animation;
 
+								animation.preloop = animation.loop;
 								animation.step = 0;
 								animation.stop = false;
 								animation.time = 0;
@@ -206,13 +207,13 @@ var game =
 								animation.delay = (animation.delays) ? animation.delays[animation.step] : animation.delay;
 								animation.h = metric.h || animation.h;
 								animation.hw = metric.hw || animation.hw;
+								animation.loop = animation.preloop;
 								animation.stop = false;
 								animation.w = metric.w || animation.w;
 								animation.wh = metric.wh || animation.wh;
 								animation.x = metric.x;
 								animation.y = metric.y;
 								animation.z = metric.z || 0;
-								game.object.load = animation;
 							};
 
 							animation.show = function (image)
@@ -255,16 +256,28 @@ var game =
 													animation.time = 0;
 													if (typeof (animation.loop) == 'number')
 													{
-														animation.loop = (animation.loop - 1 > 0) ? animation.loop -= 1 : animation.stop = true;
+														if (animation.loop - 1 > 0)
+														{
+															animation.loop--;
+														}
+														else
+														{
+															animation.stop = true;
+														};
 													};
 												};
 											};
+										}
+										else
+										{
+
 										};
 									break;
 								};
 							};
 
 							game.data.animation[id] = animation;
+							game.object.load = animation;
 						};
 					break;
 
