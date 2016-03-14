@@ -468,7 +468,6 @@ var game =
 				{
 					game.object.destroy = button;
 					game.canvas.draw.clear = { id: 'button' + button.id };
-					game.canvas.style.cursor = 'default';
 				};
 
 				button.press = function (press)
@@ -483,6 +482,7 @@ var game =
 						{
 							button.show ({ color: button.color, image: button.image });
 						};
+						game.canvas.style.cursor = 'default';
 					};
 				};
 
@@ -512,11 +512,11 @@ var game =
 					switch (game.canvas.draw.type (button))
 					{
 						case 'box':
-							game.paint = { color: color, h: h, id: id, w: w, x: x, y: y, z: z };
+							game.paint = { color: color, cx: cx, cy: cy, h: h, id: id, w: w, x: x, y: y, z: z };
 						break;
 
 						case 'image':
-							game.paint = { h: h, hw: hw, id: id, image: image, w: w, wh: wh, x: x, y: y, z: z };
+							game.paint = { cx: cx, cy: cy, h: h, hw: hw, id: id, image: image, w: w, wh: wh, x: x, y: y, z: z };
 						break;
 
 						case 'ring':
@@ -592,18 +592,31 @@ var game =
 					menu.destroy = function ()
 					{
 						game.object.destroy = menu;
-						game.object.destroy = { id: menu.id, tag: 'button' };
+						game.object.destroy = game.o.button[menu.id];
 						game.canvas.draw.clear = { id: 'button' + menu.id };
+					};
+
+					menu.reshow = function ()
+					{
+						var w = game.canvas.height * 0.1 * 2.376;
+						game.object.destroy = game.o.button[menu.id];
+						menu.show ();
 					};
 
 					menu.show = function ()
 					{
-						game.object.create.button = { action: menu.action, active: { color: '#fff' }, color: '#888', text: 'GRACE', font: { align: 'left', baseline: 'top', face: 'Trebuchet MS' }, id: menu.id, w: 0.1, x: 0.45, y: 0.45, z: 1 };
+						var w = game.canvas.height * 0.1 * 2.376;
+						game.object.create.button = { action: menu.action, active: { image: game.data.image.grace }, cx: 0.5, cy: 0.5, h: 0.1, image: game.data.image.grace, id: menu.id, wh: 2.376, w: w, x: 0.5, y: 0.5, z: 1 };
 					};
 
 					menu.update = function ()
 					{
-
+						switch (game.event.type)
+						{
+							case 'resize':
+								menu.reshow ();
+							break;
+						};
 					};
 
 					menu.show ();
@@ -787,7 +800,8 @@ game.data.load =
 		button: 'button.svg',
 		button_active: 'button_active.svg',
 		button_press: 'button_press.svg',
-		logo: 'logo.png'
+		logo: 'logo.png',
+		grace: 'grace.svg'
 	}
 };
 
