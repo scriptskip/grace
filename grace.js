@@ -37,7 +37,7 @@ var game =
 							};
 						};
 					};
-					canvas.redraw = true;
+					canvas.redraw = draw.redraw || true;
 				},
 
 				type: function (draw)
@@ -586,7 +586,7 @@ var game =
 					menu.action = function ()
 					{
 						menu.destroy ();
-						window.log = 'grace';
+						window.log = game.random ('color');
 					};
 
 					menu.destroy = function ()
@@ -650,8 +650,8 @@ var game =
 								var r = star.r;
 								var x = star.x;
 								var y = star.y;
-								game.canvas.draw.clear = { id: id };
-								game.paint = { color: color, id: id, r: r, x: x, y: y, z: 0 };
+								game.canvas.draw.clear = { id: id, redraw: false };
+								game.paint = { color: color, id: id, r: r, redraw: false, x: x, y: y, z: 0 };
 							};
 
 							star.show ();
@@ -660,9 +660,22 @@ var game =
 						}
 					};
 
+					rain.run = function ()
+					{
+						for (var i = rain.stars.length - 1; i--; )
+						{
+							var star = rain.star[i];
+						};
+					};
+
 					rain.update = function ()
 					{
-
+						switch (game.event.type)
+						{
+							case 'tick':
+								rain.run ();
+							break;
+						};
 					};
 
 					rain.create.star = {};
@@ -752,12 +765,52 @@ var game =
 		game.canvas.z = (paint.z > game.canvas.z) ? game.canvas.z = paint.z : game.canvas.z;
 
 		game.canvas.scene[game.canvas.scene.length] = paint;
-		game.canvas.redraw = true;
+		game.canvas.redraw = paint.redraw || true;
 	},
 
-	random: function ()
+	random: function (min, max, floor)
 	{
+		var random;
+		var type = 'random';
+			type = (typeof (min) == 'object') ? 'object' : type;
+			type = (Array.isArray (min) == true) ? 'array' : type;
+			type = (floor) ? 'floor' : type;
+			type = (min == 'color') ? 'color' : type;
 
+		switch (type)
+		{
+			case 'array':
+				var r = Math.floor ((Object.keys (min).length) * Math.random ());
+				random = min[r];
+			break;
+
+			case 'color':
+				random = '#' + Math.floor (16777215 * Math.random ()).toString (16);
+			break;
+
+			case 'floor':
+				random = Math.floor ((max - min + 1) * Math.random ()) + min;
+			break;
+
+			case 'object':
+				var i = 0;
+				var r = Math.floor ((Object.keys (min).length) * Math.random ());
+				for (var id in min)
+				{
+					if (i == r)
+					{
+						random = min[id];
+						break;
+					};
+					i++;
+				};
+			break;
+
+			case 'random':
+				random = (max - min) * Math.random () + min;
+			break;
+		};
+		return random;
 	},
 
 	update: function (update)
