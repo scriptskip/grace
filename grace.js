@@ -606,7 +606,7 @@ var game =
 					menu.show = function ()
 					{
 						var w = game.canvas.height * 0.1 * 2.376;
-						game.object.create.button = { action: menu.action, active: { image: game.data.image.grace }, cx: 0.5, cy: 0.5, h: 0.1, image: game.data.image.grace, id: menu.id, wh: 2.376, w: w, x: 0.5, y: 0.5, z: 1 };
+						game.object.create.button = { action: menu.action, active: { image: game.data.image.grace }, cx: 0.5, cy: 0.5, h: 0.1, image: game.data.image.grace, id: menu.id, pressed: { image: game.data.image.grace }, wh: 2.376, w: w, x: 0.5, y: 0.5, z: 1 };
 					};
 
 					menu.update = function ()
@@ -619,8 +619,55 @@ var game =
 						};
 					};
 
+					game.object.create.start.rain = {};
 					menu.show ();
 					game.object.load = menu;
+				},
+
+				set rain (rain)
+				{
+					rain.tag = 'rain';
+					game.object.id = rain;
+
+					rain.stars = [];
+
+					rain.create =
+					{
+						set star (star)
+						{
+							star.tag = 'star';
+							star.id = rain.tag + 'star' + rain.stars.length;
+
+							star.color = '#fff';
+							star.r = 2;
+							star.x = 100;
+							star.y = 100;
+
+							star.show = function ()
+							{
+								var color = star.color;
+								var id = star.id;
+								var r = star.r;
+								var x = star.x;
+								var y = star.y;
+								game.canvas.draw.clear = { id: id };
+								game.paint = { color: color, id: id, r: r, x: x, y: y, z: 0 };
+							};
+
+							star.show ();
+
+							rain.stars.push (star);
+						}
+					};
+
+					rain.update = function ()
+					{
+
+					};
+
+					rain.create.star = {};
+
+					game.object.load = rain;
 				}
 			},
 
@@ -706,6 +753,11 @@ var game =
 
 		game.canvas.scene[game.canvas.scene.length] = paint;
 		game.canvas.redraw = true;
+	},
+
+	random: function ()
+	{
+
 	},
 
 	update: function (update)
