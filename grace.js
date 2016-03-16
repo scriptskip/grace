@@ -230,6 +230,12 @@ var game =
 								animation.frames[i] = image;
 							};
 
+							animation.clear = function ()
+							{
+								animation.stop = true;
+								game.canvas.draw.clear = { id: animation.tag + animation.id };
+							};
+
 							animation.play = function (metric)
 							{
 								animation.cx = metric.cx;
@@ -481,6 +487,7 @@ var game =
 							button.in = true;
 							game.canvas.style.cursor = 'pointer';
 							button.show ({ color: button.active.color, image: button.active.image });
+							var _ = (button.active.in) ? button.active.in () : undefined;
 						};
 					}
 					else
@@ -490,6 +497,7 @@ var game =
 							button.in = false;
 							game.canvas.style.cursor = 'default';
 							button.show ({ color: button.color, image: button.image });
+							var _ = (button.active.out) ? button.active.out () : undefined;
 						};
 					};
 				};
@@ -623,6 +631,7 @@ var game =
 
 					menu.action = function ()
 					{
+						game.data.animation.run.clear ();
 						game.audio.action.run ({ src: game.data.audio.run });
 						game.audio.background.pause ();
 						menu.destroy ();
@@ -636,6 +645,16 @@ var game =
 						game.canvas.draw.clear = { id: 'button' + menu.id };
 					};
 
+					menu.in = function ()
+					{
+						game.audio.background.volume = 0.03;
+					};
+
+					menu.out = function ()
+					{
+						game.audio.background.volume = 0.02;
+					};
+
 					menu.reshow = function ()
 					{
 						var w = game.canvas.height * 0.1 * 2.376;
@@ -646,7 +665,7 @@ var game =
 					menu.show = function ()
 					{
 						var w = game.canvas.height * 0.1 * 2.376;
-						game.object.create.button = { action: menu.action, active: { image: game.data.image.grace }, cx: 0.5, cy: 0.5, h: 0.1, image: game.data.image.grace_active, id: menu.id, pressed: { image: game.data.image.grace_press }, wh: 2.376, w: w, x: 0.5, y: 0.5, z: 1 };
+						game.object.create.button = { action: menu.action, active: { image: game.data.image.grace_active, in: menu.in, out: menu.out }, cx: 0.5, cy: 0.5, h: 0.1, image: game.data.image.grace, id: menu.id, pressed: { image: game.data.image.grace_press }, wh: 2.376, w: w, x: 0.5, y: 0.5, z: 1 };
 					};
 
 					menu.update = function ()
@@ -659,6 +678,7 @@ var game =
 						};
 					};
 
+					game.data.animation.run.play ({ cx: 0.5, cy: 0.5, h: 0.1, id: 'animate' + menu.id, wh: 2.376, x: 0.5, y: 0.5 });
 					game.audio.background.run ({ src: game.data.audio.start });
 					game.object.create.start.rain = { n: 100 };
 					menu.show ();
@@ -952,11 +972,11 @@ game.data.load =
 {
 	animation:
 	{
-		test:
+		run:
 		{
-			delays: [ 200, 300, 100 ],
-			frames: [ 'button.svg', 'button_active.svg', 'button_press.svg' ],
-			loop: 3
+			delay: 100,
+			frames: [ 'grace_active.svg', 'grace.svg' ],
+			loop: true
 		}
 	},
 
