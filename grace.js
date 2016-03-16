@@ -647,11 +647,13 @@ var game =
 
 					menu.in = function ()
 					{
+						game.data.animation.run.play ({ cx: 0.5, cy: 0.5, h: 0.1, id: 'animate' + menu.id, wh: 2.376, x: 0.5, y: 0.5 });
 						game.audio.background.volume = 0.03;
 					};
 
 					menu.out = function ()
 					{
+						game.data.animation.run.clear ();
 						game.audio.background.volume = 0.02;
 					};
 
@@ -678,7 +680,6 @@ var game =
 						};
 					};
 
-					game.data.animation.run.play ({ cx: 0.5, cy: 0.5, h: 0.1, id: 'animate' + menu.id, wh: 2.376, x: 0.5, y: 0.5 });
 					game.audio.background.run ({ src: game.data.audio.start });
 					game.object.create.start.rain = { n: 100 };
 					menu.show ();
