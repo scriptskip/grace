@@ -629,6 +629,8 @@ var game =
 					menu.tag = 'menu';
 					game.object.id = menu;
 
+					menu.stars = menu.stars || 100;
+
 					menu.action = function ()
 					{
 						game.data.animation.run.clear ();
@@ -681,7 +683,7 @@ var game =
 					};
 
 					game.audio.background.run ({ src: game.data.audio.start });
-					game.object.create.start.rain = { n: 100 };
+					game.object.create.start.rain = { n: menu.stars };
 					menu.show ();
 					game.object.load = menu;
 				},
@@ -702,7 +704,7 @@ var game =
 							star.id = rain.tag + 'star' + rain.stars.length;
 
 							star.color = star.color || game.random ('color');
-							star.r = star.r || game.random (0.001, 0.003);
+							star.r = star.r || game.random (0.0005, 0.001);
 							star.x = star.x || game.random (0, 1);
 							star.y = star.y || game.random (0, 1);
 
@@ -998,5 +1000,5 @@ game.data.load =
 
 game.run = function ()
 {
-	game.object.create.start.menu = {};
+	game.object.create.start.menu = { stars: 90 };
 };
