@@ -968,9 +968,6 @@ game.data.load =
 
 	image:
 	{
-		button: 'button.svg',
-		button_active: 'button_active.svg',
-		button_press: 'button_press.svg',
 		logo: 'logo.png',
 		grace: 'grace.svg',
 		grace_active: 'grace_active.svg',
