@@ -1,5 +1,18 @@
 var game =
 {
+	audio:
+	{
+		load: function ()
+		{
+			var background = new Audio ();
+				background.loop = true;
+				background.volume = 0.05;
+
+			game.audio.background = background;
+			window.document.body.appendChild (background);
+		}
+	},
+
 	canvas:
 	{
 		load: function ()
@@ -174,6 +187,7 @@ var game =
 	data:
 	{
 		animation: {},
+		audio: {},
 		image: {},
 
 		set load (data)
@@ -280,6 +294,14 @@ var game =
 
 							game.data.animation[id] = animation;
 							game.object.load = animation;
+						};
+					break;
+
+					case 'audio':
+						for (var id in data[tag])
+						{
+							var audio = data[tag][id];
+							game.data.audio[id] = audio;
 						};
 					break;
 
@@ -413,6 +435,7 @@ var game =
 	{
 		game.window.load ();
 		game.canvas.load ();
+		game.audio.load ();
 		game.event.load ();
 		game.run ();
 	},
@@ -585,6 +608,7 @@ var game =
 
 					menu.action = function ()
 					{
+						game.audio.background.pause ();
 						menu.destroy ();
 						window.log = game.random ('color');
 					};
@@ -619,6 +643,8 @@ var game =
 						};
 					};
 
+					game.audio.background.src = game.data.audio.start;
+					game.audio.background.play ();
 					game.object.create.start.rain = { n: 100 };
 					menu.show ();
 					game.object.load = menu;
@@ -917,6 +943,11 @@ game.data.load =
 			frames: [ 'button.svg', 'button_active.svg', 'button_press.svg' ],
 			loop: 3
 		}
+	},
+
+	audio:
+	{
+		start: 'start.ogg'
 	},
 
 	image:
