@@ -639,9 +639,9 @@ var game =
 							star.id = rain.tag + 'star' + rain.stars.length;
 
 							star.color = '#fff';
-							star.r = 2;
-							star.x = 100;
-							star.y = 100;
+							star.r = star.r || game.random (2, 5, true);
+							star.x = star.x || game.random (0, game.canvas.width, true);
+							star.y = star.y || game.random (0, game.canvas.height, true);
 
 							star.show = function ()
 							{

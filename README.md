@@ -1,2 +1,2 @@
 # Grace
-Game framework
+Mining space program
