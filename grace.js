@@ -619,7 +619,7 @@ var game =
 						};
 					};
 
-					game.object.create.start.rain = {};
+					game.object.create.start.rain = { n: 100 };
 					menu.show ();
 					game.object.load = menu;
 				},
@@ -629,6 +629,7 @@ var game =
 					rain.tag = 'rain';
 					game.object.id = rain;
 
+					rain.n = rain.n || 1;
 					rain.stars = [];
 
 					rain.create =
@@ -638,33 +639,51 @@ var game =
 							star.tag = 'star';
 							star.id = rain.tag + 'star' + rain.stars.length;
 
-							star.color = '#fff';
-							star.r = star.r || game.random (2, 5, true);
-							star.x = star.x || game.random (0, game.canvas.width, true);
-							star.y = star.y || game.random (0, game.canvas.height, true);
+							star.color = star.color || game.random ('color');
+							star.r = star.r || game.random (0.001, 0.003);
+							star.x = star.x || game.random (0, 1);
+							star.y = star.y || game.random (0, 1);
 
-							star.show = function ()
+							star.show = function (draw)
 							{
+								var draw = draw || {};
 								var color = star.color;
 								var id = star.id;
 								var r = star.r;
+								var redraw = draw.redraw || false;
 								var x = star.x;
 								var y = star.y;
-								game.canvas.draw.clear = { id: id, redraw: false };
-								game.paint = { color: color, id: id, r: r, redraw: false, x: x, y: y, z: 0 };
+								game.canvas.draw.clear = { id: id };
+								game.paint = { color: color, id: id, redraw: redraw, r: r, x: x, y: y, z: 0 };
 							};
 
 							star.show ();
 
 							rain.stars.push (star);
+						},
+
+						set stars  (stars)
+						{
+							for (var i = rain.n; i--;)
+							{
+								rain.create.star = {};
+							};
 						}
 					};
 
 					rain.run = function ()
 					{
-						for (var i = rain.stars.length - 1; i--; )
+						if (game.random (0, 2, true) == 1)
 						{
-							var star = rain.star[i];
+							for (var i = rain.stars.length - 1; i--; )
+							{
+								if (game.random (0, 100, true) == 1)
+								{
+									var star = rain.stars[i];
+										star.color = game.random ('color');
+										star.show ( {redraw: true } );
+								};
+							};
 						};
 					};
 
@@ -678,7 +697,7 @@ var game =
 						};
 					};
 
-					rain.create.star = {};
+					rain.create.stars = {};
 
 					game.object.load = rain;
 				}
