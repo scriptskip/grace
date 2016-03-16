@@ -963,7 +963,7 @@ game.data.load =
 	audio:
 	{
 		start: 'start.ogg',
-		run: 'start_run.ogg'
+		run: 'run.ogg'
 	},
 
 	image:
