@@ -10,7 +10,7 @@ var game =
 
 			var background = new Audio ();
 				background.loop = true;
-				background.volume = 0.01;
+				background.volume = 0.02;
 
 			var run = function (audio)
 			{
@@ -646,7 +646,7 @@ var game =
 					menu.show = function ()
 					{
 						var w = game.canvas.height * 0.1 * 2.376;
-						game.object.create.button = { action: menu.action, active: { image: game.data.image.grace }, cx: 0.5, cy: 0.5, h: 0.1, image: game.data.image.grace, id: menu.id, pressed: { image: game.data.image.grace }, wh: 2.376, w: w, x: 0.5, y: 0.5, z: 1 };
+						game.object.create.button = { action: menu.action, active: { image: game.data.image.grace }, cx: 0.5, cy: 0.5, h: 0.1, image: game.data.image.grace_active, id: menu.id, pressed: { image: game.data.image.grace_press }, wh: 2.376, w: w, x: 0.5, y: 0.5, z: 1 };
 					};
 
 					menu.update = function ()
@@ -972,7 +972,9 @@ game.data.load =
 		button_active: 'button_active.svg',
 		button_press: 'button_press.svg',
 		logo: 'logo.png',
-		grace: 'grace.svg'
+		grace: 'grace.svg',
+		grace_active: 'grace_active.svg',
+		grace_press: 'grace_press.svg'
 	}
 };
 
