@@ -4,12 +4,27 @@ var game =
 	{
 		load: function ()
 		{
+			var action = new Audio ();
+				action.loop = false;
+				action.volume = 1;
+
 			var background = new Audio ();
 				background.loop = true;
-				background.volume = 0.05;
+				background.volume = 0.01;
 
+			var run = function (audio)
+			{
+				this.src = audio.src || this.src;
+				this.loop = audio.loop || this.loop;
+				this.volume = audio.volume || this.volume;
+				this.play ();
+			};
+
+			action.run = run;
+			background.run = run;
+
+			game.audio.action = action;
 			game.audio.background = background;
-			window.document.body.appendChild (background);
 		}
 	},
 
@@ -608,6 +623,7 @@ var game =
 
 					menu.action = function ()
 					{
+						game.audio.action.run ({ src: game.data.audio.run });
 						game.audio.background.pause ();
 						menu.destroy ();
 						window.log = game.random ('color');
@@ -643,8 +659,7 @@ var game =
 						};
 					};
 
-					game.audio.background.src = game.data.audio.start;
-					game.audio.background.play ();
+					game.audio.background.run ({ src: game.data.audio.start });
 					game.object.create.start.rain = { n: 100 };
 					menu.show ();
 					game.object.load = menu;
@@ -947,7 +962,8 @@ game.data.load =
 
 	audio:
 	{
-		start: 'start.ogg'
+		start: 'start.ogg',
+		run: 'start_run.ogg'
 	},
 
 	image:
