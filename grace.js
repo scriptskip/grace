@@ -703,8 +703,10 @@ var game =
 							star.tag = 'star';
 							star.id = rain.tag + 'star' + rain.stars.length;
 
+							var pixel = 1 / Math.min (game.canvas.height, game.canvas.width);
+
 							star.color = star.color || game.random ('color');
-							star.r = star.r || game.random (0.0005, 0.001);
+							star.r = star.r || game.random (0.5 * pixel, 1.5 * pixel);
 							star.x = star.x || game.random (0, 1);
 							star.y = star.y || game.random (0, 1);
 
