@@ -902,6 +902,8 @@ var game =
 	{
 		set next (name)
 		{
+			game.o = {};
+			game.canvas.draw.scene = [];
 			game.event.type = 'next';
 			game.scene[name] ();
 		},
