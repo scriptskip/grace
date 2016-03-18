@@ -637,7 +637,7 @@ var game =
 						game.audio.action.run ({ src: game.data.audio.run });
 						game.audio.background.pause ();
 						menu.destroy ();
-						window.log = game.random ('color');
+						game.scene.next = 'startmenu';
 					};
 
 					menu.destroy = function ()
@@ -898,10 +898,30 @@ var game =
 		return random;
 	},
 
+	scene:
+	{
+		set next (name)
+		{
+			game.event.type = 'next';
+			game.scene[name] ();
+		},
+
+		update: function ()
+		{
+			switch (game.event.type)
+			{
+				case 'next':
+					window.log = 'next';
+				break;
+			};
+		}
+	},
+
 	update: function (update)
 	{
 		game.canvas.update ();
 		game.object.update ();
+		game.scene.update ();
 	},
 
 	window:
@@ -1002,5 +1022,10 @@ game.data.load =
 
 game.run = function ()
 {
-	game.object.create.start.menu = { stars: 90 };
+	game.scene.startmenu = function ()
+	{
+		game.object.create.start.menu = { stars: 90 };
+	};
+
+	game.scene.next = 'startmenu';
 };
