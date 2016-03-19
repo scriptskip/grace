@@ -16,7 +16,7 @@ var game =
 			{
 				this.src = audio.src || this.src;
 				this.loop = audio.loop || this.loop;
-				this.volume = audio.volume || this.volume;
+				this.volume = audio.volume * game.option.audio.volume || this.volume * game.option.audio.volume;
 				this.play ();
 			};
 
@@ -771,7 +771,25 @@ var game =
 
 			set universe (universe)
 			{
-				game.object.create.galaxy = {};
+				universe.tag = 'universe';
+				game.object.id = universe;
+
+				universe.create = function ()
+				{
+					var n = game.random (game.option.universe.galaxy.number.min, game.option.universe.galaxy.number.max);
+					for (var i = n; i--;)
+					{
+						game.object.create.galaxy = {};
+					};
+					game.data.universe.number = n;
+				};
+
+				universe.show = function ()
+				{
+
+				};
+
+				game.object.load = universe;
 			}
 		},
 
@@ -824,6 +842,34 @@ var game =
 		}
 	},
 
+	option:
+	{
+		audio:
+		{
+			volume: 0
+		},
+
+		universe:
+		{
+			galaxy:
+			{
+				number: { min: 3, max: 5 },
+				star:
+				{
+					number: { min: 100, max: 1000 },
+					planet:
+					{
+						number: { min: 0, max: 20 },
+						satellite:
+						{
+							number: { min: 0, max: 10 }
+						}
+					}
+				}
+			}
+		}
+	},
+
 	set paint (paint)
 	{
 		paint.id = paint.id || game.canvas.scene.length;
@@ -852,6 +898,8 @@ var game =
 		game.canvas.scene[game.canvas.scene.length] = paint;
 		game.canvas.redraw = paint.redraw || true;
 	},
+
+	player: {},
 
 	random: function (min, max, floor)
 	{
@@ -1027,6 +1075,11 @@ game.run = function ()
 	game.scene.startmenu = function ()
 	{
 		game.object.create.start.menu = { stars: 90 };
+	};
+
+	game.scene.universe = function ()
+	{
+		game.o.universe.show ();
 	};
 
 	game.scene.next = 'startmenu';
