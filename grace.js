@@ -467,7 +467,7 @@ var game =
 	{
 		create:
 		{
-			set asteroid (asteroid) {},
+			asteroid: function (asteroid) {},
 
 			set button (button)
 			{
@@ -603,23 +603,37 @@ var game =
 
 			set comet (comet) {},
 
-			set galaxy (galaxy)
+			galaxy: function (galaxy)
 			{
-				game.object.create.star = {};
+				galaxy.tag = 'galaxy';
+				game.object.id = galaxy;
+
+				galaxy.create = function ()
+				{
+					galaxy.x = game.random (0, 1);
+					galaxy.y = game.random (0, 1);
+				};
+
+				galaxy.update = function ()
+				{
+
+				};
+
+				game.object.load = galaxy;
 			},
 
-			set planet (planet)
+			planet: function (planet)
 			{
-				game.object.create.satellite = {};
+				game.object.create.satellite ();
 			},
 
-			set satellite (satellite) {},
+			satellite: function (satellite) {},
 
-			set star (star)
+			star: function (star)
 			{
-				game.object.create.asteroid = {};
-				game.object.create.comet = {};
-				game.object.create.planet = {};
+				game.object.create.asteroid ();
+				game.object.create.comet ();
+				game.object.create.planet ();
 			},
 
 			start:
@@ -769,22 +783,33 @@ var game =
 				}
 			},
 
-			set universe (universe)
+			universe: function (universe)
 			{
 				universe.tag = 'universe';
 				game.object.id = universe;
 
+				universe.galaxy = [];
+
 				universe.create = function ()
 				{
-					var n = game.random (game.option.universe.galaxy.number.min, game.option.universe.galaxy.number.max);
-					for (var i = n; i--;)
+					universe.number = game.random (game.option.universe.galaxy.number.min, game.option.universe.galaxy.number.max);
+					for (var i = universe.number; i--;)
 					{
-						game.object.create.galaxy = {};
+						universe.galaxy.push (game.object.create.galaxy ());
 					};
-					game.data.universe.number = n;
+					game.data.universe = universe;
 				};
 
 				universe.show = function ()
+				{
+					for (var i = universe.galaxy.length; i--;)
+					{
+						var galaxy = universe.galaxy[i];
+						game.paint = { r: galaxy.r, x: galaxy.x, y: galaxy.y };
+					};
+				};
+
+				universe.update = function ()
 				{
 
 				};
@@ -909,6 +934,7 @@ var game =
 			type = (Array.isArray (min) == true) ? 'array' : type;
 			type = (floor) ? 'floor' : type;
 			type = (min == 'color') ? 'color' : type;
+			type = (min == 'word') ? 'word' : type;
 
 		switch (type)
 		{
@@ -941,6 +967,17 @@ var game =
 
 			case 'random':
 				random = (max - min) * Math.random () + min;
+			break;
+
+			case 'word':
+				var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+				var l = Math.floor (10 * Math.random ()) + 1;
+				random = '';
+				for (var i = l; i--;)
+				{
+					var n = Math.floor ((Object.keys (chars).length) * Math.random ());
+					random += chars[n];
+				};
 			break;
 		};
 		return random;
@@ -1081,6 +1118,8 @@ game.run = function ()
 	{
 		game.o.universe.show ();
 	};
+
+	window.log = game.random ('word');
 
 	game.scene.next = 'startmenu';
 };
