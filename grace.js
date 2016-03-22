@@ -610,8 +610,10 @@ var game =
 
 				galaxy.create = function ()
 				{
-					galaxy.x = game.random (0, 1);
-					galaxy.y = game.random (0, 1);
+					galaxy.name = game.random ('word');
+					galaxy.r = game.random (game.option.universe.galaxy.r.min, game.option.universe.galaxy.r.max);
+					galaxy.x = game.random (game.option.universe.galaxy.x.min, game.option.universe.galaxy.x.max);
+					galaxy.y = game.random (game.option.universe.galaxy.y.min, game.option.universe.galaxy.y.max);
 				};
 
 				galaxy.update = function ()
@@ -619,7 +621,9 @@ var game =
 
 				};
 
+				galaxy.create ();
 				game.object.load = galaxy;
+				return galaxy;
 			},
 
 			planet: function (planet)
@@ -651,7 +655,7 @@ var game =
 						game.audio.action.run ({ src: game.data.audio.run });
 						game.audio.background.pause ();
 						menu.destroy ();
-						game.scene.next = 'startmenu';
+						game.scene.next = 'universe';
 					};
 
 					menu.destroy = function ()
@@ -783,7 +787,7 @@ var game =
 				}
 			},
 
-			universe: function (universe)
+			set universe (universe)
 			{
 				universe.tag = 'universe';
 				game.object.id = universe;
@@ -792,10 +796,10 @@ var game =
 
 				universe.create = function ()
 				{
-					universe.number = game.random (game.option.universe.galaxy.number.min, game.option.universe.galaxy.number.max);
+					universe.number = game.random (game.option.universe.galaxy.number.min, game.option.universe.galaxy.number.max, true);
 					for (var i = universe.number; i--;)
 					{
-						universe.galaxy.push (game.object.create.galaxy ());
+						universe.galaxy.push (game.object.create.galaxy ({}));
 					};
 					game.data.universe = universe;
 				};
@@ -805,7 +809,9 @@ var game =
 					for (var i = universe.galaxy.length; i--;)
 					{
 						var galaxy = universe.galaxy[i];
-						game.paint = { r: galaxy.r, x: galaxy.x, y: galaxy.y };
+						var color = game.option.universe.galaxy.color;
+						var id = galaxy.tag + galaxy.id;
+						game.paint = { color: color, id: id, r: galaxy.r, x: galaxy.x, y: galaxy.y };
 					};
 				};
 
@@ -814,6 +820,8 @@ var game =
 
 				};
 
+				universe.create ();
+				universe.show ();
 				game.object.load = universe;
 			}
 		},
@@ -878,7 +886,9 @@ var game =
 		{
 			galaxy:
 			{
+				color: '#fff',
 				number: { min: 3, max: 5 },
+				r: { min: 0.005, max: 0.01 },
 				star:
 				{
 					number: { min: 100, max: 1000 },
@@ -890,7 +900,9 @@ var game =
 							number: { min: 0, max: 10 }
 						}
 					}
-				}
+				},
+				x: { min: 0.1, max: 0.9 },
+				y: { min: 0.1, max: 0.9 },
 			}
 		}
 	},
@@ -971,7 +983,7 @@ var game =
 
 			case 'word':
 				var chars = 'AAAAAAAAAAAAAAAABBBCCCCCDDDDDDDDEEEEEEEEEEEEEEEEEEEEEEEEEFFFFFGGGGHHHHHHHHHHHHIIIIIIIIIIIIIIJKKLLLLLLLLMMMMMNNNNNNNNNNNNNOOOOOOOOOOOOOOOPPPPQRRRRRRRRRRRRRSSSSSSSSSSSSSTTTTTTTTTTTTTTTTTTTUUUUUUVVWWWWWXYYYYZ';
-				var l = Math.floor (10 * Math.random ()) + 2;
+				var l = Math.floor (9 * Math.random ()) + 2;
 				random = '';
 				for (var i = l; i--;)
 				{
@@ -988,7 +1000,7 @@ var game =
 		set next (name)
 		{
 			game.o = {};
-			game.canvas.draw.scene = [];
+			game.canvas.scene = [];
 			game.event.type = 'next';
 			game.scene[name] ();
 		},
@@ -1116,10 +1128,8 @@ game.run = function ()
 
 	game.scene.universe = function ()
 	{
-		game.o.universe.show ();
+		game.object.create.universe = {};
 	};
-
-	window.log = game.random ('word');
 
 	game.scene.next = 'startmenu';
 };
