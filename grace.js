@@ -610,6 +610,11 @@ var game =
 
 				galaxy.star = [];
 
+				galaxy.action = function ()
+				{
+					window.log = 'act';
+				};
+
 				galaxy.create = function ()
 				{
 					galaxy.name = game.random ('word');
@@ -621,6 +626,14 @@ var game =
 					for (var i = galaxy.number; i--;)
 					{
 						galaxy.star.push (game.object.create.star ({}));
+					};
+				};
+
+				galaxy.show = function ()
+				{
+					for (var i = galaxy.star.length; i--;)
+					{
+						galaxy.star[i].show ()
 					};
 				};
 
@@ -653,9 +666,13 @@ var game =
 					star.x = game.random (game.option.universe.galaxy.star.x.min, game.option.universe.galaxy.star.x.max);
 					star.y = game.random (game.option.universe.galaxy.star.y.min, game.option.universe.galaxy.star.y.max);
 
-					game.object.create.asteroid ();
-					game.object.create.comet ();
-					game.object.create.planet ();
+					//game.object.create.asteroid ();
+					//game.object.create.comet ();
+					//game.object.create.planet ();
+				};
+
+				star.show = function ()
+				{
 				};
 
 				star.update = function () {};
@@ -817,11 +834,6 @@ var game =
 
 				universe.galaxy = [];
 
-				universe.action = function ()
-				{
-
-				};
-
 				universe.create = function ()
 				{
 					universe.number = game.random (game.option.universe.galaxy.number.min, game.option.universe.galaxy.number.max, true);
@@ -843,7 +855,7 @@ var game =
 						var r = galaxy.r;
 						var x = galaxy.x;
 						var y = galaxy.y;
-						game.object.create.button = { action: universe.action, active: {}, color: color, id: id, r: r, x: x, y: y };
+						game.object.create.button = { action: galaxy.action, active: {}, color: color, id: id, r: r, x: x, y: y };
 						game.paint = { color: color, font: { align: 'center' }, id: 'name' + id, text: name, x: x, y: y - 2 * r };
 					};
 				};
@@ -1056,7 +1068,7 @@ var game =
 			switch (game.event.type)
 			{
 				case 'next':
-					window.log = 'next';
+					//window.log = 'next';
 				break;
 			};
 		}
@@ -1177,7 +1189,10 @@ game.run = function ()
 		game.object.create.universe = {};
 	};
 
-	game.scene.starmap
+	game.scene.galaxy = function ()
+	{
+
+	};
 
 	game.scene.next = 'startmenu';
 };
