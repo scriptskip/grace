@@ -608,12 +608,20 @@ var game =
 				galaxy.tag = 'galaxy';
 				game.object.id = galaxy;
 
+				galaxy.star = [];
+
 				galaxy.create = function ()
 				{
 					galaxy.name = game.random ('word');
 					galaxy.r = game.random (game.option.universe.galaxy.r.min, game.option.universe.galaxy.r.max);
 					galaxy.x = game.random (game.option.universe.galaxy.x.min, game.option.universe.galaxy.x.max);
 					galaxy.y = game.random (game.option.universe.galaxy.y.min, game.option.universe.galaxy.y.max);
+
+					galaxy.number = game.random (game.option.universe.galaxy.star.number.min, game.option.universe.galaxy.star.number.max, true);
+					for (var i = galaxy.number; i--;)
+					{
+						galaxy.star.push (game.object.create.star ({}));
+					};
 				};
 
 				galaxy.update = function ()
@@ -635,9 +643,24 @@ var game =
 
 			star: function (star)
 			{
-				game.object.create.asteroid ();
-				game.object.create.comet ();
-				game.object.create.planet ();
+				star.tag = 'star';
+				game.object.id = star;
+
+				star.create = function ()
+				{
+					star.name = game.random ('word');
+					star.r = game.random (game.option.universe.galaxy.star.r.min, game.option.universe.galaxy.star.r.max);
+					star.x = game.random (game.option.universe.galaxy.star.x.min, game.option.universe.galaxy.star.x.max);
+					star.y = game.random (game.option.universe.galaxy.star.y.min, game.option.universe.galaxy.star.y.max);
+
+					game.object.create.asteroid ();
+					game.object.create.comet ();
+					game.object.create.planet ();
+				};
+
+				star.update = function () {};
+
+				game.object.load = star;
 			},
 
 			start:
@@ -794,6 +817,11 @@ var game =
 
 				universe.galaxy = [];
 
+				universe.action = function ()
+				{
+
+				};
+
 				universe.create = function ()
 				{
 					universe.number = game.random (game.option.universe.galaxy.number.min, game.option.universe.galaxy.number.max, true);
@@ -815,7 +843,7 @@ var game =
 						var r = galaxy.r;
 						var x = galaxy.x;
 						var y = galaxy.y;
-						game.object.create.button = { active: {}, color: color, id: id, r: r, x: x, y: y };
+						game.object.create.button = { action: universe.action, active: {}, color: color, id: id, r: r, x: x, y: y };
 						game.paint = { color: color, font: { align: 'center' }, id: 'name' + id, text: name, x: x, y: y - 2 * r };
 					};
 				};
@@ -987,13 +1015,26 @@ var game =
 			break;
 
 			case 'word':
-				var chars = 'AAAAAAAAAAAAAAAABBBCCCCCDDDDDDDDEEEEEEEEEEEEEEEEEEEEEEEEEFFFFFGGGGHHHHHHHHHHHHIIIIIIIIIIIIIIJKKLLLLLLLLMMMMMNNNNNNNNNNNNNOOOOOOOOOOOOOOOPPPPQRRRRRRRRRRRRRSSSSSSSSSSSSSTTTTTTTTTTTTTTTTTTTUUUUUUVVWWWWWXYYYYZ';
-				var l = Math.floor (9 * Math.random ()) + 2;
+				var chars = 'AAAAAAAAAAAAAAAABBBCCCCCDDDDDDDDEEEEEEEEEEEEEEEEEEEEEEEFFFFFGGGGHHHHHHHHHHHHIIIIIIIIIIIIIIJKKLLLLLLLLMMMMMNNNNNNNNNNNNNOOOOOOOOOOOOOOOPPPPQRRRRRRRRRRRRRSSSSSSSSSSSSSTTTTTTTTTTTTTTTTTTTUUUUUUVVWWWWWXYYYYZ';
+				var vowels = 'AAAAAAAAAAAAAAAAEEEEEEEEEEEEEEEEEEEEEEEEEIIIIIIIIIIIIIIOOOOOOOOOOOOOOOUUUUUUYYYY';
+				var consonants = 'BBBCCCCCDDDDDDDDFFFFFGGGGHHHHHHHHHHHHJKKLLLLLLLLMMMMMNNNNNNNNNNNNNPPPPQRRRRRRRRRRRRRSSSSSSSSSSSSSTTTTTTTTTTTTTTTTTTTVVWWWWWXZ';
+				var coin = Math.random () < 0.5 ? true : false;
+
+				var m = (Math.random() > 0.9) ? 4 : 2;
+				var parts = Math.floor (4 * Math.random ()) + m;
+
 				random = '';
-				for (var i = l; i--;)
+				for (var i = parts; i--;)
 				{
-					var n = Math.floor ((Object.keys (chars).length) * Math.random ());
-					random += chars[n];
+					var k = (Math.random() > 0.1) ? 1 : 2;
+					var l = Math.floor (k * Math.random ()) + 1;
+					for (var j = l; j--;)
+					{
+						var chars = (coin) ? vowels : consonants;
+						var n = Math.floor ((Object.keys (chars).length) * Math.random ());
+						random += chars[n];
+					};
+					coin = (coin) ? false : true;
 				};
 			break;
 		};
@@ -1135,6 +1176,8 @@ game.run = function ()
 	{
 		game.object.create.universe = {};
 	};
+
+	game.scene.starmap
 
 	game.scene.next = 'startmenu';
 };
