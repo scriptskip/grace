@@ -811,7 +811,12 @@ var game =
 						var galaxy = universe.galaxy[i];
 						var color = game.option.universe.galaxy.color;
 						var id = galaxy.tag + galaxy.id;
-						game.paint = { color: color, id: id, r: galaxy.r, x: galaxy.x, y: galaxy.y };
+						var name = galaxy.name;
+						var r = galaxy.r;
+						var x = galaxy.x;
+						var y = galaxy.y;
+						game.object.create.button = { active: {}, color: color, id: id, r: r, x: x, y: y };
+						game.paint = { color: color, font: { align: 'center' }, id: 'name' + id, text: name, x: x, y: y - 2 * r };
 					};
 				};
 
