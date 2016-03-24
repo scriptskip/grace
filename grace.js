@@ -612,7 +612,9 @@ var game =
 
 				galaxy.action = function ()
 				{
-					window.log = 'act';
+					game.canvas.clear ();
+					game.player.galaxy = galaxy;
+					game.scene.next = 'galaxy';
 				};
 
 				galaxy.create = function ()
@@ -631,9 +633,9 @@ var game =
 
 				galaxy.show = function ()
 				{
-					for (var i = galaxy.star.length; i--;)
+					for (var i = galaxy.star.length - 1; i--;)
 					{
-						galaxy.star[i].show ()
+						galaxy.star[i].show ();
 					};
 				};
 
@@ -659,8 +661,14 @@ var game =
 				star.tag = 'star';
 				game.object.id = star;
 
+				star.action = function ()
+				{
+
+				};
+
 				star.create = function ()
 				{
+					star.color = game.random ('color');
 					star.name = game.random ('word');
 					star.r = game.random (game.option.universe.galaxy.star.r.min, game.option.universe.galaxy.star.r.max);
 					star.x = game.random (game.option.universe.galaxy.star.x.min, game.option.universe.galaxy.star.x.max);
@@ -671,13 +679,37 @@ var game =
 					//game.object.create.planet ();
 				};
 
+				star.in = function ()
+				{
+					var color = star.color;
+					var id = 'name' + star.tag + star.id;
+					var name = star.name;
+					var x = star.x;
+					var y = star.y - 2 * star.r;
+					game.paint = { color: color, font: { align: 'center' }, id: id, text: name, x: x, y: y }
+				};
+
+				star.out = function ()
+				{
+					var id = 'name' + star.tag + star.id;
+					game.canvas.draw.clear = { id: id };
+				};
+
 				star.show = function ()
 				{
+					var color = star.color;
+					var id = star.tag + star.id;
+					var r = star.r;
+					var x = star.x;
+					var y = star.y;
+					game.object.create.button = { action: star.action, active: { color: color, in: star.in, out: star.out }, color: color, id: id, r: r, redraw: false, x: x, y: y };
 				};
 
 				star.update = function () {};
 
+				star.create ();
 				game.object.load = star;
+				return star;
 			},
 
 			start:
@@ -944,7 +976,10 @@ var game =
 						{
 							number: { min: 0, max: 10 }
 						}
-					}
+					},
+					r: { min: 0.003, max: 0.005 },
+					x: { min: 0.01, max: 0.99 },
+					y: { min: 0.01, max: 0.99 }
 				},
 				x: { min: 0.1, max: 0.9 },
 				y: { min: 0.1, max: 0.9 },
@@ -1191,7 +1226,7 @@ game.run = function ()
 
 	game.scene.galaxy = function ()
 	{
-
+		game.player.galaxy.show ();
 	};
 
 	game.scene.next = 'startmenu';
