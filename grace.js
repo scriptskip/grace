@@ -612,7 +612,6 @@ var game =
 
 				galaxy.action = function ()
 				{
-					game.canvas.clear ();
 					game.player.galaxy = galaxy;
 					game.scene.next = 'galaxy';
 				};
@@ -633,7 +632,7 @@ var game =
 
 				galaxy.show = function ()
 				{
-					for (var i = galaxy.star.length - 1; i--;)
+					for (var i = galaxy.star.length; i--;)
 					{
 						galaxy.star[i].show ();
 					};
@@ -917,22 +916,25 @@ var game =
 
 		in: function (object)
 		{
-			var result;
-			var r = game.canvas.transform.r ({ r: object.r });
-			var x = game.canvas.transform.x ({ x: object.x, k: object.cx, w: object.w || 2 * r });
-			var y = game.canvas.transform.y ({ y: object.y, k: object.cy, h: object.h || 2 * r });
-			if (object.r)
+			if (object)
 			{
-				var R = Math.sqrt (Math.pow (game.event.x - x, 2) + Math.pow (game.event.y - y, 2));
-				result = (R <= r);
-			}
-			else
-			{
-				var h = game.canvas.transform.h ({ h: object.h, k: object.hw, w: object.w });
-				var w = game.canvas.transform.w ({ w: object.w, k: object.wh, h: object.h });
-				result = ((game.event.x >= x) && (game.event.x <= x + w) && (game.event.y >= y) && (game.event.y <= y + h));
+				var result;
+				var r = game.canvas.transform.r ({ r: object.r });
+				var x = game.canvas.transform.x ({ x: object.x, k: object.cx, w: object.w || 2 * r });
+				var y = game.canvas.transform.y ({ y: object.y, k: object.cy, h: object.h || 2 * r });
+				if (object.r)
+				{
+					var R = Math.sqrt (Math.pow (game.event.x - x, 2) + Math.pow (game.event.y - y, 2));
+					result = (R <= r);
+				}
+				else
+				{
+					var h = game.canvas.transform.h ({ h: object.h, k: object.hw, w: object.w });
+					var w = game.canvas.transform.w ({ w: object.w, k: object.wh, h: object.h });
+					result = ((game.event.x >= x) && (game.event.x <= x + w) && (game.event.y >= y) && (game.event.y <= y + h));
+				};
+				return result;
 			};
-			return result;
 		},
 
 		set load (object)
@@ -968,7 +970,7 @@ var game =
 				r: { min: 0.005, max: 0.01 },
 				star:
 				{
-					number: { min: 100, max: 1000 },
+					number: { min: 100, max: 500 },
 					planet:
 					{
 						number: { min: 0, max: 20 },
